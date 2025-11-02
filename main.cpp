@@ -93,7 +93,7 @@ public:
     }
 
     deck(deck &model) {
-        for (int i=0; i < model.getSize(); ++i) {
+        for (unsigned int i=0; i < model.getSize(); ++i) {
             cards.push_back( model.cards[i] );
         }
     }
@@ -114,16 +114,16 @@ public:
     }
 
     //GET/SETTERS
-    int getSize() {
+    unsigned int getSize() {
         return cards.size();
     }
-    void setCard(const int poz, const card& card) {
-        cards[poz] = card;
-    }
-    card showCard(const int poz) {
-        return cards[poz];
-    }
-    card getCard() {
+    // void setCard(const int poz, const card& card) {
+    //     cards[poz] = card;
+    // }
+    // card showCard(const int poz) {
+    //     return cards[poz];
+    // }
+    card deckDraw() {
         //draw card from deck
         card x = cards[cards.size() - 1];
         cards.pop_back();
@@ -138,7 +138,7 @@ public:
 
     friend std::ostream& operator<< (std::ostream &os, const deck &deck) {
         std::cout << deck.cards.size() << " cards\n";
-        for (int i=0; i < deck.cards.size(); ++i) {
+        for (unsigned   int i=0; i < deck.cards.size(); ++i) {
             os << deck.cards[i] << "||";
         }
         return os;
@@ -151,7 +151,7 @@ private:
     int maxMana, curMana, health;
     bool active;
     std::vector<card> hand, board;
-    deck deck;
+    deck p_deck;
 public:
     player() {
         health = 10;
@@ -164,11 +164,11 @@ public:
     ~player() = default;
 
     void deck_init( const card *card_pool, const int *card_freq, const int pool_size) {
-        deck.deck_init(card_pool, card_freq, pool_size);
+        p_deck.deck_init(card_pool, card_freq, pool_size);
         // nu imi place asta
     }
 
-    void playCard(const int poz) {
+    void playCard(const unsigned int poz) {
         if (!active) {
             std::cout << "player inactive!\n";
             return;
@@ -194,23 +194,23 @@ public:
     }
 
     void drawCard() {
-        if (deck.getSize() == 0) {
+        if (p_deck.getSize() == 0) {
             std::cout << "deck empty!\n";
             return;
         }
         if (hand.size() >= 10) {
             std::cout << "hand is full\n";
-            deck.getCard(); // "destroy" card you would have drawn
+            p_deck.deckDraw(); // "destroy" card you would have drawn
             return;
         }
-        hand.push_back(deck.getCard() );
+        hand.push_back(p_deck.deckDraw() );
     }
 
     void takeDMG(int dmg) {
         health -= dmg;
     }
 
-    void atkMinion(player &p2, int atk_poz, int targ_poz) {
+    void atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
         if (board[atk_poz].checkFlag()) {
             std::cout << "minion has already attacked!\n";
             return;
@@ -227,7 +227,7 @@ public:
 
     }
 
-    void atkPlayer(player &p2, int atk_poz) {
+    void atkPlayer(player &p2, const unsigned int atk_poz) {
         if (board[atk_poz].checkFlag()) {
             std::cout << "minion has already attacked!\n";
             return;
@@ -238,7 +238,7 @@ public:
         std::cout << "attacked player with minion " << atk_poz << '\n';
     }
 
-    card& getMinion(const int poz) { // a minion is a card on the board
+    card& getMinion(const unsigned int poz) { // a minion is a card on the board
         if (poz > board.size()-1) {
             std::cout << "minion beyond board!\n";
             // return card(0, 0, 0);
@@ -249,7 +249,7 @@ public:
 
     void checkBoard() {
         // removes dead minions from board
-        for (int i=0; i < board.size(); ++i) {
+        for (unsigned int i=0; i < board.size(); ++i) {
             if (board[i].getHealth() <= 0 ) {
                 board.erase(board.begin() + i);
                 // ulog << "Minion " << i << " has died\n";
@@ -287,7 +287,7 @@ public:
         for (const card& card : p1.board)
             os << card << "||";
         os << '\n' << "deck: ";
-        os << p1.deck << "\n\n";
+        os << p1.p_deck << "\n\n";
         return os;
     }
 };
@@ -306,8 +306,8 @@ public:
 int main() {
 
     card c1(1, 3, 4), c2;
-    card card_pool[3]{ card(3, 4, 2) , card(2, 1, 4), card(1, 2, 1)};
-    int card_freq[3]{3, 3, 3};
+    card const card_pool[3]{ card(3, 4, 2) , card(2, 1, 4), card(1, 2, 1)};
+    int const card_freq[3]{3, 3, 3};
     player p1, p2;
     p1.deck_init(card_pool, card_freq, 3);
     p2.deck_init(card_pool, card_freq, 3);
