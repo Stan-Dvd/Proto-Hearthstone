@@ -1,4 +1,6 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Proto-Hearthstone
+
+Joc rudimentar de tip Card Battler inspirat de Hearthstone. Va fi implementata o versiune local multiplayer. Cei doi jucatori pot pune carti pe masa, pot ataca folosind aceste carti si pot folosi alte abilitati speciale/vraji (vraji TBD si multe rugaciuni)
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
