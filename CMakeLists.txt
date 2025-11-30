@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing executable name in this file
 # for now, the project name is used as the executable name
-set(MAIN_PROJECT_NAME "oop")
+set(MAIN_PROJECT_NAME "Proto-Hearthstone")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}")
 
 
@@ -57,10 +57,16 @@ endif()
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
-    main.cpp
-    generated/src/Helper.cpp
-    ResourceManager.cpp
-    ResourceManager.hpp
+        main.cpp
+        generated/src/Helper.cpp
+        sources/ResourceManager.cpp
+        headers/ResourceManager.hpp
+        headers/card.h
+        headers/deck.hpp
+        headers/player.hpp
+        sources/card.cpp
+        sources/deck.cpp
+        sources/player.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
@@ -74,6 +80,7 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 
 # use SYSTEM so cppcheck and clang-tidy do not report warnings from these directories
 target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE generated/include)
+target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/headers)
 # target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
 target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
 target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${SFML_BINARY_DIR}/lib)
@@ -105,7 +112,6 @@ copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE
 #       => copy_files(DIRECTORY fonts images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # Pentru exemplul din main.cpp avem nevoie de folder-ul `images` și de folder-ul `fonts`.
 copy_files(DIRECTORY images fonts COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-
 # Dacă avem nevoie de fișiere care nu sunt organizate într-un folder folosim tot funcția `copy_files()`
 # Exemplu general: copy_files(FILES fisier1.json fisier2.txt fisier3.in COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # Exemplu: Avem un fișier JSON care nu se află în nici un folder

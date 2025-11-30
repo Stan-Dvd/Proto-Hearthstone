@@ -14,8 +14,12 @@ ResourceManager& ResourceManager::Instance()
 ResourceManager::ResourceManager()
 {
     loadTexture("images", "airplane.png");
+    loadTexture("images", "board_texture.png");
+    loadTexture("images", "minion_blank.png");
+    loadTexture("images", "spell_blank.png");
 
     loadFont("fonts", "FiraSans-Regular.ttf");
+    loadFont("fonts", "Belwe-Bold.otf");
 }
 
 void ResourceManager::loadTexture(const std::string& path, const std::string& texture_name)
