@@ -1,6 +1,5 @@
 #ifndef CARD_H
 #define CARD_H
-#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "constants.h"

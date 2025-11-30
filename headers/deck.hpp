@@ -1,5 +1,3 @@
-
-
 #ifndef DECK_HPP
 #define DECK_HPP
 #include <vector>
@@ -30,7 +28,7 @@ public:
     card getCard();
     void shuffle();
 
-    void drawDeck(sf::RenderWindow window);
+    // void drawDeck(sf::RenderWindow window);
 
     friend std::ostream& operator<< (std::ostream &os, const deck &deck);
 

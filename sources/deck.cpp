@@ -55,9 +55,9 @@ deck::deck() {
         std::shuffle(std::begin(cards), std::end(cards), rng);
     }
 
-    void deck::drawDeck(sf::RenderWindow window) {
-
-    }
+    // void deck::drawDeck(sf::RenderWindow window) {
+    //
+    // }
 
 
     std::ostream& operator<< (std::ostream &os, const deck &deck) {

@@ -1,8 +1,5 @@
-# pragma once
 #include "card.h"
 #include "ResourceManager.hpp"
-#include <iostream>
-#include "constants.h"
 
     card::card(int cost, int pow, int hp, std::string texture):
                     cost(cost), power(pow), health(hp),
