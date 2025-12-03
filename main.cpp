@@ -73,7 +73,6 @@ int main() {
     const float scale_y = static_cast<float>(window_size.y) / static_cast<float>(texture_size.y);
 
     Board.scale({scale_x, scale_y});
-    sf::FloatRect boardBounds = Board.getGlobalBounds();
 
     p1.startTurn();
     p1.playCard(0);
@@ -121,10 +120,6 @@ int main() {
         window.clear();
 
         window.draw(Board);
-        const float x = boardBounds.position.x + boardBounds.size.x * 0.3f;
-        const float y = boardBounds.position.y + boardBounds.size.y - boardBounds.size.y*0.3f;
-        // c1.setScale(scale_x, scale_y);
-        // c1.draw(window, x, y);
         p1.drawPlayer(window);
         p2.drawPlayer(window);
 

@@ -5,9 +5,9 @@
 
 sf::Sprite player::turn_button(ResourceManager::Instance().getTexture("turn_end.png"));
 
-player::player(int id) :
-    p_deck(id), player_id(id), health(10), maxMana(1), curMana(1),
-    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0), active(false),
+player::player(const int id) :
+    maxMana(1), curMana(1), health(10), player_id(id), active(false),
+    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(id),
     mana_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     hp_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     mana_sprite(ResourceManager::Instance().getTexture("crystal.png")),
