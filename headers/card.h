@@ -16,8 +16,8 @@ public:
 
     // CONSTRUCTORS
     card(int cost, int pow, int hp, std::string texture = PLACEHOLDER_MINION_TEXTURE);
-
     card (const card &model);// COPY constructor
+    ~card();
 
     // GET/SETTERS
 
@@ -33,7 +33,7 @@ public:
     void draw(sf::RenderWindow &window, const float x, const float y);
     void setScale(const float x, const float y);
 
-    card operator=(const card &model);
+    // card operator=(const card &model);
     friend std::ostream& operator<< (std::ostream &os, const card &card);
 };
 

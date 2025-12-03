@@ -27,8 +27,17 @@
             card_sprite(model.card_sprite.getTexture()),
             hp_txt(model.hp_txt),
             pow_txt(model.pow_txt),
-            cost_txt(model.cost_txt)
-    {} // COPY constructor
+            cost_txt(model.cost_txt) {} // COPY constructor
+
+card::~card() {
+        sf::Texture blankT = sf::Texture();
+        sf::Font blankF = sf::Font();
+        // nu ma lasa sa pun pur si simplu Texture() in functie ughh
+        card_sprite.setTexture(blankT);
+        hp_txt.setFont(blankF);
+        pow_txt.setFont(blankF);
+        cost_txt.setFont(blankF);
+    }
 
 // GET/SETTERS
 
@@ -70,10 +79,10 @@
         float new_y = bounds.position.y + bounds.size.y * 0.01f;
         cost_txt.setPosition({new_x, new_y});
         new_x = bounds.position.x + bounds.size.x * 0.11f;
-        new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.18f;
+        new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
         pow_txt.setPosition({new_x, new_y});
-        new_x = bounds.position.x + bounds.size.x - bounds.size.x * 0.15f;
-        new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.18f;
+        new_x = bounds.position.x + bounds.size.x - bounds.size.x * 0.16f;
+        new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
         hp_txt.setPosition({new_x, new_y});
 
         window.draw(card_sprite);
@@ -84,18 +93,25 @@
 
 void card::setScale(const float x, const float y) {
         card_sprite.setScale({x, y});
+        hp_txt.setScale({x, y});
+        pow_txt.setScale({x, y});
+        cost_txt.setScale({x, y});
     }
 
 
 // OPERATORS
 
-    card card::operator=(const card &model){
-        cost = model.cost;
-        power = model.power;
-        health = model.health;
-        attackFlag = model.attackFlag;
-        return *this;
-    }
+    // card card::operator=(const card &model){
+    //     cost = model.cost;
+    //     power = model.power;
+    //     health = model.health;
+    //     attackFlag = model.attackFlag;
+    //     card_sprite = model.card_sprite;
+    //     hp_txt = model.hp_txt;
+    //     pow_txt = model.pow_txt;
+    //     cost_txt = model.cost_txt;
+    //     return *this;
+    // }
     std::ostream& operator<< (std::ostream &os, const card &card) {
         os << "c:"<< card.cost;
         os << " pwr:" << card.power;

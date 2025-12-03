@@ -9,5 +9,6 @@
 #define FONT_SIZE 35.0f
 #define FONT_DEFUALT "Belwe-Bold.otf"
 #define PLACEHOLDER_MINION_TEXTURE "minion_blank.png"
+#define SLOT_WIDTH 180
 
 #endif //CONSTANTS_H

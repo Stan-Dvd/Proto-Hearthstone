@@ -25,21 +25,25 @@
 
 int main() {
 
-    // card c1(1, 3, 4);
-    // card const card_pool[3]{ card(3, 4, 2) , card(2, 1, 4), card(1, 2, 1)};
-    // int const card_freq[3]{3, 3, 3};
-    // player p1, p2;
+    card c1(1, 3, 4);
+    card const card_pool[3]{ card(3, 4, 2) , card(2, 1, 4), card(1, 2, 1)};
+    int const card_freq[3]{3, 3, 3};
+    player p1(1), p2(2);
     //
     // // deck shuffle test
-    // deck test_deck;
-    // test_deck.deck_init(card_pool, card_freq, 3);
-    // test_deck.shuffle();
-    // std::cout << test_deck << '\n' << '\n';
-    //
-    // p1.deck_init(card_pool, card_freq, 3);
-    // p2.deck_init(card_pool, card_freq, 3);
+    deck test_deck1(1);
+    test_deck1.deck_init(card_pool, card_freq, 3);
+    deck test_deck2(2);
+    test_deck1.deck_init(card_pool, card_freq, 3);
 
-    card c1(1, 3, 3);
+    p1.deck_init(card_pool, card_freq, 3);
+    p2.deck_init(card_pool, card_freq, 3);
+    for (int i=0; i < 3; ++i) {
+        p1.drawFromDeck();
+        p2.drawFromDeck();
+    }
+
+    std::cout << p1 << '\n';
 
 
     sf::RenderWindow window;
@@ -48,6 +52,8 @@ int main() {
     /// NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:31
     std::cout << "Fereastra a fost creată\n";
     window.setFramerateLimit(60);
+    p1.setStartPos(window);
+    p2.setStartPos(window);
 
     sf::Texture board_texture;
     try {
@@ -68,6 +74,22 @@ int main() {
 
     Board.scale({scale_x, scale_y});
     sf::FloatRect boardBounds = Board.getGlobalBounds();
+
+    p1.startTurn();
+    p1.playCard(0);
+    p1.endTurn();
+
+    p2.startTurn();
+    p2.playCard(0);
+    p2.endTurn();
+
+    p1.startTurn();
+    p1.atkPlayer(p2, 0);
+    p1.playCard(1);
+    p1.atkMinion(p2, 1, 0);
+    // p1.endTurn();
+
+    std::cout << p1 << '\n';
 
     while(window.isOpen()) {
         bool shouldExit = false;
@@ -101,8 +123,10 @@ int main() {
         window.draw(Board);
         const float x = boardBounds.position.x + boardBounds.size.x * 0.3f;
         const float y = boardBounds.position.y + boardBounds.size.y - boardBounds.size.y*0.3f;
-        c1.setScale(scale_x, scale_y);
-        c1.draw(window, x, y);
+        // c1.setScale(scale_x, scale_y);
+        // c1.draw(window, x, y);
+        p1.drawPlayer(window);
+        p2.drawPlayer(window);
 
         window.display();
     }

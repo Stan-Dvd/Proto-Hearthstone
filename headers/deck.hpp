@@ -7,12 +7,12 @@ class deck {
 private:
     std::vector<card> cards;
     float startPosX, startPosY;
-    bool player_id;
+    int player_id;
 
 public:
 
     // CONSTRUCTORS
-    deck();
+    deck(int id);
 
     deck(deck &model);
 
@@ -23,12 +23,12 @@ public:
     //GET/SETTERS
     unsigned int getSize();
     void setCard(const int poz, const card& card);
-    void setStartPos(const float posX, const float posY);
+    void setStartPos(sf::RenderWindow window);
 
     card getCard();
     void shuffle();
 
-    // void drawDeck(sf::RenderWindow window);
+    void drawDeck(sf::RenderWindow window);
 
     friend std::ostream& operator<< (std::ostream &os, const deck &deck);
 
