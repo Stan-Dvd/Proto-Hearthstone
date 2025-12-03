@@ -10,6 +10,7 @@ private:
     int cost, power, health;
     bool attackFlag; // tracks if card has attacked this turn
     bool selectFLag; //tracks if card is selected
+    bool deployFlag; //tracks if card is on the board or in hand
     sf::Sprite card_sprite;
     sf::Text hp_txt, pow_txt, cost_txt;
 
@@ -25,10 +26,16 @@ public:
     int getCost();
     int getPower();
     int getHealth();
-    void set_atkFlag(const bool val);
+    sf::FloatRect getGlobalBounds();
     bool check_atkFlag();
+    bool check_deployFlag();
+    bool check_selectFlag();
+    void set_atkFlag(const bool val);
+    void set_selectFlag(const bool val);
+    void set_deployFlag(const bool val);
 
-    void attack(card &target);
+
+    void attack(card *target);
     int is_playable(int mana);
 
     void draw(sf::RenderWindow &window, const float x, const float y);

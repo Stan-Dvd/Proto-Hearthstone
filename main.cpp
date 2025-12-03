@@ -32,7 +32,7 @@ int main() {
 
     game master;
     master.init(card_pool, card_freq, 3, card_pool, card_freq, 3);
-    master.demo();
+    // master.demo();
     master.run();
 
     return 0;

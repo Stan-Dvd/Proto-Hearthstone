@@ -1,8 +1,6 @@
 
 #include "player.hpp"
 
-sf::Sprite player::turn_button(ResourceManager::Instance().getTexture("turn_end.png"));
-
 player::player(const int id) :
     maxMana(1), curMana(1), health(10), player_id(id), active(false),
     Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(id),
@@ -22,7 +20,7 @@ void player::deck_init( const card *card_pool, const int *card_freq, const int p
     // nu imi place asta
 }
 
-void player::playCard(const unsigned int poz) {
+void player::playCard( const unsigned int poz ) {
     if (!active) {
         std::cout << "player inactive!\n";
         return;
@@ -39,10 +37,43 @@ void player::playCard(const unsigned int poz) {
     }
     if (hand[poz].is_playable(curMana)) { // check if player has enough mana
         board.push_back(hand[poz]); //place card on board
-        board[board.size() - 1].setScale(0.65f, 0.65f);
+        board[board.size() - 1].setScale(BOARD_SCALE, BOARD_SCALE);
         curMana = curMana - hand[poz].getCost(); // pay mana cost
-        hand.erase(hand.begin() + poz); // erase card from hand
-        std::cout << "played card " << poz << " from hand\n";
+        //DELETE card from hand (in a very scuffed way because pointers)
+        hand.erase(hand.begin() + poz);
+    }
+    std::cout << "not enough mana!\n";
+}
+
+void player::playCard( card* atk ) {
+    // if (!active) {
+    //     std::cout << "player inactive!\n";
+    //     return;
+    //     // va fi folosit pt butoane probabil
+    // }
+    // if (poz > hand.size()-1) {
+    //     // teoretic n-ar trb sa se intample la butoane
+    //     std::cout << "card beyond hand!\n";
+    //     return;
+    // }
+    if (board.size() >= 7) {
+        std::cout << "board is full\n";
+        return;
+    }
+    if (atk->is_playable(curMana)) { // check if player has enough mana
+        atk->set_selectFlag(false);
+        atk->set_atkFlag(true);
+        board.push_back(*atk); //place card on board
+        board[board.size() - 1].setScale(BOARD_SCALE, BOARD_SCALE);
+        board[board.size() - 1].set_deployFlag(true);
+        curMana = curMana - atk->getCost(); // pay mana cost
+        //DELETE card from hand (in a very scuffed way because pointers)
+        for (unsigned int i=0; i < hand.size(); ++i) {
+            if (&hand[i] == atk) {
+                hand.erase(hand.begin() + i);
+                std::cout << "played card" << i << "from hand\n";
+            }
+        }
         return;
     }
     std::cout << "not enough mana!\n";
@@ -74,17 +105,40 @@ void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned in
         std::cout << "enemy minion beyond board!\n";
         return;
     }
-    if (board[atk_poz].check_atkFlag()) {
+    if (hand[atk_poz].check_atkFlag()) {
         std::cout << "minion has already attacked!\n";
         return;
     }
-    board[atk_poz].attack(p2.getMinion(targ_poz));
+    hand[atk_poz].attack(&p2.getMinion(targ_poz));
     // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
-    std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
+    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
     this->checkBoard();
     p2.checkBoard();
 
 }
+
+void player::atkMinion(player &p2, card* atk, card* target) {
+    // if (atk_poz > board.size()-1) {
+    //     std::cout << "own minion beyond board!\n";
+    //     return;
+    // }
+    // if (targ_poz > p2.board.size()-1) {
+    //     std::cout << "enemy minion beyond board!\n";
+    //     return;
+    // }
+    if (atk->check_atkFlag()) {
+        std::cout << "minion has already attacked!\n";
+        return;
+    }
+    atk->attack(target);
+    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
+    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
+    this->checkBoard();
+    p2.checkBoard();
+
+}
+
+
 
 void player::atkPlayer(player &p2, const unsigned int atk_poz) {
     if (atk_poz > board.size()-1) {
@@ -99,6 +153,21 @@ void player::atkPlayer(player &p2, const unsigned int atk_poz) {
     board[atk_poz].set_atkFlag(true);
     // ulog << "attacked player with minion " << atk_poz << '\n';
     std::cout << "attacked player with minion " << atk_poz << '\n';
+}
+
+void player::atkPlayer(player &p2, card* atk) {
+    // if (atk_poz > board.size()-1) {
+    //     std::cout << "minion beyond board!\n";
+    //     return;
+    // }
+    if (atk->check_atkFlag()) {
+        std::cout << "minion has already attacked!\n";
+        return;
+    }
+    p2.takeDMG( atk->getPower() );
+    atk->set_atkFlag(true);
+    // ulog << "attacked player with minion " << atk_poz << '\n';
+    // std::cout << "attacked player with minion " << atk_poz << '\n';
 }
 
 card& player::getMinion(const unsigned int poz) { // a minion is a card on the board
@@ -136,19 +205,44 @@ void player::endTurn() {
         card.set_atkFlag(false);
         //reset all minions on board
     }
-    if (player_id == 1)
-        turn_button.setTexture(ResourceManager::Instance().getTexture("turn_end_p2.png"));
-    else
-        turn_button.setTexture(ResourceManager::Instance().getTexture("turn_end.png"));
 }
+
+card* player::selectCard(const sf::Vector2f mouse_pos) {
+    //search hand
+    for (unsigned int i=0; i<hand.size(); ++i) {
+        if ( hand[i].getGlobalBounds().contains(mouse_pos)) {
+            // hand[i].set_selectFlag(true);
+            return &hand[i];
+        }
+    }
+    //search board
+    for (unsigned int i=0; i<board.size(); ++i) {
+        if ( board[i].getGlobalBounds().contains(mouse_pos)) {
+            // board[i].set_selectFlag(true);
+            return &board[i];
+        }
+    }
+    return nullptr;
+}
+
+
+sf::FloatRect player::getBoardBounds() const {
+    sf::FloatRect bounds;
+    if (player_id == 2)
+        bounds.position.x = Board_startPosX - 7 * SLOT_WIDTH * BOARD_SCALE;
+    else
+        bounds.position.x = Board_startPosX;
+    bounds.position.y = Board_startPosY;
+    bounds.size.x = 7 * SLOT_WIDTH * BOARD_SCALE;
+    bounds.size.y = SLOT_HEIGHT * BOARD_SCALE;
+
+    return bounds;
+}
+
 
 void player::setStartPos(const sf::RenderWindow &window) {
     //set positions for displaying hand, board, mana, hp
     sf::Vector2u size = window.getSize();
-
-    turn_button.setPosition({static_cast<float>(size.x) * 0.76f,
-                            static_cast<float>(size.y) * 0.43f});
-    turn_button.setScale({0.7f, 0.7f});
     if (player_id == 1) {
         //hand
         Hand_startPosX = static_cast<float>(size.x) * 0.05f;
@@ -195,12 +289,18 @@ void player::setStartPos(const sf::RenderWindow &window) {
 void player::drawHand(sf::RenderWindow &window) {
     if (player_id == 1) {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            hand[i].draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+            if (hand[i].check_selectFlag())
+                hand[i].draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - SELECT_OFFSET);
+            else
+                hand[i].draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
         }
     }
     else {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            hand[i].draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+            if (hand[i].check_selectFlag())
+                hand[i].draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + SELECT_OFFSET);
+            else
+                hand[i].draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
         }
     }
 }
@@ -208,12 +308,19 @@ void player::drawHand(sf::RenderWindow &window) {
 void player::drawBoard(sf::RenderWindow &window) {
     if (player_id == 1) {
         for (unsigned int i=0; i < board.size(); ++i) {
+            if (board[i].check_selectFlag())
+                board[i].draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - SELECT_OFFSET/1.6);
+            else
             board[i].draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
         }
     }
     else {
         for (unsigned int i=0; i < board.size(); ++i) {
-            board[i].draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
+            if (board[i].check_selectFlag())
+                board[i].draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + SELECT_OFFSET/1.6);
+            else
+                board[i].draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
+
         }
     }
 }
@@ -226,7 +333,6 @@ void player::drawManaHp(sf::RenderWindow &window) {
     window.draw(mana_text);
     window.draw(hp_sprite);
     window.draw(hp_text);
-    window.draw(turn_button);
     window.draw(mana_sprite);
 }
 

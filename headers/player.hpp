@@ -16,18 +16,20 @@ private:
     deck p_deck;
     sf::Text mana_text, hp_text;
     sf::Sprite mana_sprite, hp_sprite;
-    static sf::Sprite turn_button;
 public:
     player(int id);
     ~player();
 
     void deck_init( const card *card_pool, const int *card_freq, const int pool_size);
 
-    void playCard(const unsigned int poz);
+    void playCard( const unsigned int poz ); //debug
+    void playCard(card* atk);
     void drawFromDeck();
     void takeDMG(int dmg);
-    void atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz);
-    void atkPlayer(player &p2, const unsigned int atk_poz);
+    void atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz); //debug
+    void atkMinion(player &p2, card* atk, card* target);
+    void atkPlayer(player &p2, const unsigned int atk_poz); //debug
+    void atkPlayer(player &p2, card* atk);
 
     card& getMinion(const unsigned int poz);
 
@@ -35,7 +37,10 @@ public:
     void startTurn();
     void endTurn();
 
+    card* selectCard(const sf::Vector2f mouse_pos);
+
     void setStartPos(const sf::RenderWindow &window);
+    sf::FloatRect getBoardBounds() const;
     void drawHand(sf::RenderWindow &window);
     void drawBoard(sf::RenderWindow &window);
     void drawManaHp(sf::RenderWindow &window);
