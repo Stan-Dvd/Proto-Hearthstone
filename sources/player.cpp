@@ -225,6 +225,13 @@ card* player::selectCard(const sf::Vector2f mouse_pos) {
     return nullptr;
 }
 
+bool player::selectPlayer(const sf::Vector2f mouse_pos) {
+    if (hp_sprite.getGlobalBounds().contains(mouse_pos))
+        return true;
+    return false;
+}
+
+
 
 sf::FloatRect player::getBoardBounds() const {
     sf::FloatRect bounds;

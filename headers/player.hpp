@@ -38,6 +38,7 @@ public:
     void endTurn();
 
     card* selectCard(const sf::Vector2f mouse_pos);
+    bool selectPlayer(const sf::Vector2f mouse_pos);
 
     void setStartPos(const sf::RenderWindow &window);
     sf::FloatRect getBoardBounds() const;

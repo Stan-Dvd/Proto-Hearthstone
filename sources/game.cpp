@@ -1,7 +1,6 @@
 
 #include "game.hpp"
 
-#include <winsock2.h>
 
 
 game::game() :
@@ -103,6 +102,7 @@ void game::handle_select(const auto mouse_pos) {
     selected_card->set_selectFlag(false); //orice se intampla, nu mai e selectata dupa
 
     if (selected_card->check_deployFlag() == false) {
+        //if selected card is in a hand
         if (select_id == 1) {
             if (p1.getBoardBounds().contains(mouse_pos)) {
                 p1.playCard(selected_card);
@@ -115,17 +115,22 @@ void game::handle_select(const auto mouse_pos) {
         }
     }
     else {
+        //if selected card is on a board
         card *target;
         //TODO: eventual fa cu exceptii in loc de nullptr
         if (select_id == 1) {
             target = p2.selectCard(mouse_pos);
             if (target != nullptr)
                 p1.atkMinion(p2, selected_card, target);
+            else if (p2.selectPlayer(mouse_pos))
+                p1.atkPlayer(p2, selected_card);
         }
         else {
             target = p1.selectCard(mouse_pos);
             if (target != nullptr)
                 p2.atkMinion(p1, selected_card, target);
+            else if (p1.selectPlayer(mouse_pos))
+                p2.atkPlayer(p1, selected_card);
         }
     }
 }

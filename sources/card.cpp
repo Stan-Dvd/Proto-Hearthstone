@@ -1,5 +1,7 @@
 #include "card.hpp"
 
+#include <cmath>
+
 card::card(int cost, int pow, int hp, std::string texture):
                     cost(cost), power(pow), health(hp),
                     attackFlag(false), selectFLag(false), deployFlag(false),
@@ -104,9 +106,11 @@ void card::draw(sf::RenderWindow &window, const float x, const float y) {
     new_x = bounds.position.x + bounds.size.x * 0.11f;
     new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
     pow_txt.setPosition({new_x, new_y});
+    pow_txt.setString(std::to_string(power));
     new_x = bounds.position.x + bounds.size.x - bounds.size.x * 0.16f;
     new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
     hp_txt.setPosition({new_x, new_y});
+    hp_txt.setString(std::to_string(health));
 
     window.draw(card_sprite);
     window.draw(hp_txt);
