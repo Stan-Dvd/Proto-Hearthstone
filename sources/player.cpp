@@ -41,7 +41,7 @@ void player::playCard(const unsigned int poz) {
     }
     if (hand[poz].is_playable(curMana)) { // check if player has enough mana
         board.push_back(hand[poz]); //place card on board
-        board[board.size() - 1].setScale(0.65, 0.65);
+        board[board.size() - 1].setScale(0.65f, 0.65f);
         curMana = curMana - hand[poz].getCost(); // pay mana cost
         hand.erase(hand.begin() + poz); // erase card from hand
         std::cout << "played card " << poz << " from hand\n";
@@ -163,7 +163,7 @@ void player::setStartPos(sf::RenderWindow &window) {
                         static_cast<float>(size.y) * 0.68f});
         mana_sprite.setPosition({static_cast<float>(size.x) * 0.61f,
                         static_cast<float>(size.y) * 0.68f});
-        mana_sprite.setScale({0.6, 0.6});
+        mana_sprite.setScale({0.6f, 0.6f});
         //hp
         hp_sprite.setPosition({static_cast<float>(size.x) * 0.35f,
                 static_cast<float>(size.y) * 0.67f});
@@ -184,7 +184,7 @@ void player::setStartPos(sf::RenderWindow &window) {
                         static_cast<float>(size.y) * 0.25f});
         mana_sprite.setPosition({static_cast<float>(size.x) * 0.33f,
                         static_cast<float>(size.y) * 0.25f});
-        mana_sprite.setScale({0.6, 0.6});
+        mana_sprite.setScale({0.6f, 0.6f});
         //hp
         hp_sprite.setPosition({static_cast<float>(size.x) * 0.6f,
                 static_cast<float>(size.y) * 0.25f});
