@@ -1,7 +1,6 @@
-#include "card.h"
-#include "ResourceManager.hpp"
+#include "card.hpp"
 
-    card::card(int cost, int pow, int hp, std::string texture):
+card::card(int cost, int pow, int hp, std::string texture):
                     cost(cost), power(pow), health(hp),
                     card_sprite(ResourceManager::Instance().getTexture(texture)),
                     hp_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),

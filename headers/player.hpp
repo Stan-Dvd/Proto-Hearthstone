@@ -35,7 +35,7 @@ public:
     void startTurn();
     void endTurn();
 
-    void setStartPos(sf::RenderWindow &window);
+    void setStartPos(const sf::RenderWindow &window);
     void drawHand(sf::RenderWindow &window);
     void drawBoard(sf::RenderWindow &window);
     void drawManaHp(sf::RenderWindow &window);

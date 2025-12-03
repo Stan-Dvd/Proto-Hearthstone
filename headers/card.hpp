@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "constants.h"
+#include "ResourceManager.hpp"
 
 class card {
 private:

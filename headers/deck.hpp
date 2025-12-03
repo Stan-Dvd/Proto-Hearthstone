@@ -1,7 +1,7 @@
 #ifndef DECK_HPP
 #define DECK_HPP
 #include <vector>
-#include "card.h"
+#include "card.hpp"
 
 class deck {
 private:

@@ -1,8 +1,6 @@
 
 #include "player.hpp"
 
-#include "ResourceManager.hpp"
-
 sf::Sprite player::turn_button(ResourceManager::Instance().getTexture("turn_end.png"));
 
 player::player(const int id) :
@@ -144,7 +142,7 @@ void player::endTurn() {
         turn_button.setTexture(ResourceManager::Instance().getTexture("turn_end.png"));
 }
 
-void player::setStartPos(sf::RenderWindow &window) {
+void player::setStartPos(const sf::RenderWindow &window) {
     //set positions for displaying hand, board, mana, hp
     sf::Vector2u size = window.getSize();
 

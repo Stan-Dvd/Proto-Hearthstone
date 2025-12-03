@@ -61,12 +61,14 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         generated/src/Helper.cpp
         sources/ResourceManager.cpp
         headers/ResourceManager.hpp
-        headers/card.h
+        headers/card.hpp
         headers/deck.hpp
         headers/player.hpp
+        headers/game.hpp
         sources/card.cpp
         sources/deck.cpp
         sources/player.cpp
+        sources/game.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
