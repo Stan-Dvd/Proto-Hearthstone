@@ -10,8 +10,8 @@
 
 class game{
 private:
-    player p1, p2;
-    int turn_id, select_id;
+    player p[2];
+    bool turn_id; // traks whose turn it is
     bool select_flag;
     card *selected_card;
     sf::Sprite Board, turn_button;

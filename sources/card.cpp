@@ -1,5 +1,5 @@
 #include "card.hpp"
-
+#include "player.hpp"
 #include <cmath>
 
 card::card(int cost, int pow, int hp, std::string texture):
@@ -81,12 +81,46 @@ void card::set_deployFlag(const bool val) {
     deployFlag = val;
 }
 
+void card::action(player *p, bool owner, sf::Vector2f mouse_pos) {
+    //TODO: make pure virtual, move this to MINION class
+
+    if (deployFlag == false) {
+        // minion is in hand. deploy minion?
+        if (p[owner].getBoardBounds().contains(mouse_pos))
+            p[owner].playCard(this);
+    }
+    else {
+        //minion is on board. attack?
+        if (attackFlag == true) {
+            std::cout << "minion has already attacked / is not ready";
+            return;
+        }
+
+        card *target = p[!owner].selectCard(mouse_pos);
+        // TODO: implement noselect exception
+        if (target != nullptr) {
+            // if target is enemy minion
+            attackFlag = true;
+            attack(target);
+            p[0].checkBoard();
+            p[1].checkBoard();
+            std::cout << "minion of player " << !owner << "attacked";
+        }
+        else if (p[!owner].selectPlayer(mouse_pos)) {
+            attackFlag = true;
+            p[!owner].takeDMG(power);
+            std::cout << "player " << !owner << " attacked";
+        }
+    }
+    //whatever happens, deselect card. otherwise gets way too complicated
+    selectFLag = false;
+}
+
 
 void card::attack(card *target) {
     target->health -= power;
     health -= target->power;
     // both cards damage each-other
-    attackFlag = true;
 }
 
 int card::is_playable(int mana) {

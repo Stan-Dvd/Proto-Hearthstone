@@ -65,6 +65,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         headers/deck.hpp
         headers/player.hpp
         headers/game.hpp
+        headers/constants.hpp
         sources/card.cpp
         sources/deck.cpp
         sources/player.cpp
@@ -114,7 +115,7 @@ copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE
 #       => copy_files(DIRECTORY fonts images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # Pentru exemplul din main.cpp avem nevoie de folder-ul `images` și de folder-ul `fonts`.
 copy_files(DIRECTORY images fonts COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-copy_files(DIRECTORY headers sources COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+# copy_files(DIRECTORY headers sources COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 #
 # Dacă avem nevoie de fișiere care nu sunt organizate într-un folder folosim tot funcția `copy_files()`
 # Exemplu general: copy_files(FILES fisier1.json fisier2.txt fisier3.in COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})

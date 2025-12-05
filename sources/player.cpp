@@ -97,6 +97,8 @@ void player::takeDMG(int dmg) {
 }
 
 void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
+    //TODO: remove - old, used before sfml
+
     if (atk_poz > board.size()-1) {
         std::cout << "own minion beyond board!\n";
         return;
@@ -118,29 +120,24 @@ void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned in
 }
 
 void player::atkMinion(player &p2, card* atk, card* target) {
-    // if (atk_poz > board.size()-1) {
-    //     std::cout << "own minion beyond board!\n";
+// TODO: can be removed, logic moved to card::action
+
+    // if (atk->check_atkFlag()) { // logic MOVED to card::action
+    //     std::cout << "minion has already attacked!\n";
     //     return;
     // }
-    // if (targ_poz > p2.board.size()-1) {
-    //     std::cout << "enemy minion beyond board!\n";
-    //     return;
-    // }
-    if (atk->check_atkFlag()) {
-        std::cout << "minion has already attacked!\n";
-        return;
-    }
     atk->attack(target);
     // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
     // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
     this->checkBoard();
     p2.checkBoard();
-
 }
 
 
 
 void player::atkPlayer(player &p2, const unsigned int atk_poz) {
+//TODO: remove - old, used before sfml
+
     if (atk_poz > board.size()-1) {
         std::cout << "minion beyond board!\n";
         return;
@@ -156,6 +153,8 @@ void player::atkPlayer(player &p2, const unsigned int atk_poz) {
 }
 
 void player::atkPlayer(player &p2, card* atk) {
+    //TODO: can remove, logic moved to card::action
+
     // if (atk_poz > board.size()-1) {
     //     std::cout << "minion beyond board!\n";
     //     return;
@@ -210,14 +209,14 @@ void player::endTurn() {
 card* player::selectCard(const sf::Vector2f mouse_pos) {
     //search hand
     for (unsigned int i=0; i<hand.size(); ++i) {
-        if ( hand[i].getGlobalBounds().contains(mouse_pos)) {
+        if ( hand[i].getGlobalBounds().contains(mouse_pos) ) {
             // hand[i].set_selectFlag(true);
             return &hand[i];
         }
     }
     //search board
     for (unsigned int i=0; i<board.size(); ++i) {
-        if ( board[i].getGlobalBounds().contains(mouse_pos)) {
+        if ( board[i].getGlobalBounds().contains(mouse_pos) ) {
             // board[i].set_selectFlag(true);
             return &board[i];
         }

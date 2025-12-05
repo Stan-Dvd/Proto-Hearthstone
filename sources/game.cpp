@@ -4,7 +4,8 @@
 
 
 game::game() :
-    p1(1), p2(2), turn_id(1), select_id(0),
+    p{player(1), player(2)},
+    turn_id(0),
     select_flag(false), selected_card(nullptr),
     Board(ResourceManager::Instance().getTexture(BOARD_TEXTURE)),
     turn_button(ResourceManager::Instance().getTexture(TURN_P1_T)),
@@ -34,18 +35,18 @@ game::game() :
     text.setCharacterSize(TEXTBOX_FONT);
     text.setString("Current turn: P1");
 
-    p1.setStartPos(window);
-    p2.setStartPos(window);
-    p1.startTurn();
+    p[0].setStartPos(window);
+    p[1].setStartPos(window);
+    p[0].startTurn();
 }
 
 void game::init(const card *card_pool1, const int *card_freq1, const int pool_size1,
                 const card *card_pool2, const int *card_freq2, const int pool_size2) {
-    p1.deck_init(card_pool1, card_freq1, pool_size1);
-    p2.deck_init(card_pool2, card_freq2, pool_size2);
-    for (int i=0; i<3; ++i) {
-        p1.drawFromDeck();
-        p2.drawFromDeck();
+    p[0].deck_init(card_pool1, card_freq1, pool_size1);
+    p[1].deck_init(card_pool2, card_freq2, pool_size2);
+    for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
+        p[0].drawFromDeck();
+        p[1].drawFromDeck();
     }
 }
 
@@ -55,37 +56,39 @@ void game::display() {
     window.draw(turn_button);
     window.draw(text_box);
     window.draw(text);
-    p1.drawPlayer(window);
-    p2.drawPlayer(window);
+    p[0].drawPlayer(window);
+    p[1].drawPlayer(window);
     window.display();
 }
 
 void game::switchTurn() {
-    if (turn_id == 1) {
-        turn_id = 2;
-        p1.endTurn();
-        p2.startTurn();
-        turn_button.setTexture(ResourceManager::Instance().getTexture(TURN_P2_T));
-        text.setString("Current turn: P2");
-    }
-    else {
-        turn_id = 1;
-        p2.endTurn();
-        p1.startTurn();
-        turn_button.setTexture(ResourceManager::Instance().getTexture(TURN_P1_T));
-        text.setString("Current turn: P1");
-    }
+    p[turn_id].endTurn();
+    p[!turn_id].startTurn();
+    turn_button.setTexture(ResourceManager::Instance().getTexture( !turn_id ? TURN_P2_T : TURN_P1_T ));
+    text.setString( !turn_id ? "Current turn: P2" : "Current turn: P1");
+    turn_id = !turn_id;
+
+    //RIP 14 linii de if-uri
+
+    // if (turn_id == 1) {
+    //     turn_id = 2;
+    //     p[0].endTurn();
+    //     p[1].startTurn();
+    //     turn_button.setTexture(ResourceManager::Instance().getTexture(TURN_P2_T));
+    //     text.setString("Current turn: P2");
+    // }
+    // else {
+    //     turn_id = 1;
+    //     p[1].endTurn();
+    //     p[0].startTurn();
+    //     turn_button.setTexture(ResourceManager::Instance().getTexture(TURN_P1_T));
+    //     text.setString("Current turn: P1");
+    // }
 }
 
 void game::selectCard(const auto mouse_pos) {
-    if (turn_id == 1) {
-        selected_card = p1.selectCard(mouse_pos);
-        select_id = 1;
-    }
-    else if (turn_id == 2) {
-        selected_card = p2.selectCard(mouse_pos);
-        select_id = 2;
-    }
+    //player whose turn it is selects a card
+    selected_card = p[turn_id].selectCard(mouse_pos);
 
     if (selected_card != nullptr) {
         select_flag = true;
@@ -99,54 +102,49 @@ void game::selectCard(const auto mouse_pos) {
 }
 
 void game::handle_select(const auto mouse_pos) {
+//TODO: remove
+
     selected_card->set_selectFlag(false); //orice se intampla, nu mai e selectata dupa
 
-    if (selected_card->check_deployFlag() == false) {
-        //if selected card is in a hand
-        if (select_id == 1) {
-            if (p1.getBoardBounds().contains(mouse_pos)) {
-                p1.playCard(selected_card);
-            }
-        }
-        else {
-            if (p2.getBoardBounds().contains(mouse_pos)) {
-                p2.playCard(selected_card);
-            }
-        }
+    if (selected_card->check_deployFlag() == false) { //selected card is in and
+        //TODO: replace with call to action function in card class
+        if ( p[turn_id].getBoardBounds().contains(mouse_pos) )
+            //see if player clicked the board
+            p[turn_id].playCard(selected_card);
+
     }
-    else {
-        //if selected card is on a board
+    else { //selected card is on a board
         card *target;
         //TODO: eventual fa cu exceptii in loc de nullptr
-        if (select_id == 1) {
-            target = p2.selectCard(mouse_pos);
+        if (turn_id == 0) {
+            target = p[1].selectCard(mouse_pos);
             if (target != nullptr)
-                p1.atkMinion(p2, selected_card, target);
-            else if (p2.selectPlayer(mouse_pos))
-                p1.atkPlayer(p2, selected_card);
+                p[0].atkMinion(p[1], selected_card, target);
+            else if (p[1].selectPlayer(mouse_pos))
+                p[0].atkPlayer(p[1], selected_card);
         }
         else {
-            target = p1.selectCard(mouse_pos);
+            target = p[0].selectCard(mouse_pos);
             if (target != nullptr)
-                p2.atkMinion(p1, selected_card, target);
-            else if (p1.selectPlayer(mouse_pos))
-                p2.atkPlayer(p1, selected_card);
+                p[1].atkMinion(p[0], selected_card, target);
+            else if (p[0].selectPlayer(mouse_pos))
+                p[1].atkPlayer(p[0], selected_card);
         }
     }
 }
 
 
 void game::handle_click(const auto mouse_pos) {
-    if (turn_button.getGlobalBounds().contains(mouse_pos))
+    if ( turn_button.getGlobalBounds().contains(mouse_pos) ) // turn button is clicked
         switchTurn();
     else if (!select_flag) {
         selectCard(mouse_pos);
     }
     else { // exista o carte selectata, vezi ce faci cu ea
-        handle_select(mouse_pos);
+        // handle_select(mouse_pos);
+        selected_card->action(p, turn_id, mouse_pos); // virtual! whoa!
         select_flag = false;
         selected_card = nullptr;
-        select_id = 0;
     }
 }
 
@@ -182,33 +180,33 @@ void game::run() {
 }
 
 void game::demo() {
-    for (int i=0; i < 3; ++i) {
-        p1.drawFromDeck();
-        p2.drawFromDeck();
-    }
-    p1.startTurn();
-    p1.playCard(0U);
-    p1.endTurn();
-
-    p2.startTurn();
-    p2.playCard(0U);
-    p2.endTurn();
-
-    p1.startTurn();
-    p1.atkPlayer(p2, 0U);
-    p1.playCard(0U);
-    p1.playCard(1);
-    p1.endTurn();
-    p1.startTurn();
-    p1.playCard(0U);
-    p1.playCard(0U);
-    p1.playCard(0U);
-    p1.endTurn();
-    p1.startTurn();
-    p1.playCard(0U);
-
-
-    std::cout << p1 << '\n';
+    // for (int i=0; i < 3; ++i) {
+    //     p1.drawFromDeck();
+    //     p2.drawFromDeck();
+    // }
+    // p1.startTurn();
+    // p1.playCard(0U);
+    // p1.endTurn();
+    //
+    // p2.startTurn();
+    // p2.playCard(0U);
+    // p2.endTurn();
+    //
+    // p1.startTurn();
+    // p1.atkPlayer(p2, 0U);
+    // p1.playCard(0U);
+    // p1.playCard(1);
+    // p1.endTurn();
+    // p1.startTurn();
+    // p1.playCard(0U);
+    // p1.playCard(0U);
+    // p1.playCard(0U);
+    // p1.endTurn();
+    // p1.startTurn();
+    // p1.playCard(0U);
+    //
+    //
+    // std::cout << p1 << '\n';
 }
 
 
