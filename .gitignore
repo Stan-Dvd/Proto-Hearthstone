@@ -1,7 +1,7 @@
 
 build/
 install_dir/
-.idea
+.idea/
 
 
 test.cpp
