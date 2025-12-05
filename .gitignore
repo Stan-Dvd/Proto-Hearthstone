@@ -1,6 +1,8 @@
 
 build/
 install_dir/
+.idea
+
 
 test.cpp
 demo.cpp

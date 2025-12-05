@@ -13,7 +13,6 @@ ResourceManager& ResourceManager::Instance()
 
 ResourceManager::ResourceManager()
 {
-    loadTexture("images", "airplane.png");
     loadTexture("images", "board_texture.png");
     loadTexture("images", "minion_blank.png");
     loadTexture("images", "spell_blank.png");

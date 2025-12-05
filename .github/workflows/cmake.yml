@@ -139,6 +139,8 @@ jobs:
             cxx: clang++
             name: "macOS 14 Apple Clang 15"
             cmake_flags: "-DUSE_ASAN=OFF -DSFML_BUILD_FRAMEWORKS=FALSE -DSFML_DEPENDENCIES_INSTALL_PREFIX=$GITHUB_WORKSPACE/artifacts -DBUILD_SHARED_LIBS=FALSE"
+            cmake: >-
+              "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
             # cmake_generator:
             # This env runs address sanitizers
             # runs_asan: false
