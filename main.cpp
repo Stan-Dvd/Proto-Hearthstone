@@ -6,6 +6,7 @@
 // #include "deck.hpp"
 // #include "player.hpp"
 #include "game.hpp"
+#include "spell.hpp"
 
 
 
@@ -22,11 +23,12 @@
 
 int main() {
 
-    card* card_pool[3] { new minion(3, 4, 2), new minion(2, 1, 4), new minion(1, 2, 1)};
-    int const card_freq[3]{3, 3, 3};
+    card* card_pool[4] { new minion(3, 4, 2), new minion(2, 1, 4),
+                        new minion(1, 2, 1), new spell(1)};
+    int const card_freq[4]{3, 3, 1, 2};
 
     game master;
-    master.init(card_pool, card_freq, 3, card_pool, card_freq, 3);
+    master.init(card_pool, card_freq, 4, card_pool, card_freq, 4);
     // master.demo();
     master.run();
 

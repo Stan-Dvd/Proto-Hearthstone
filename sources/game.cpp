@@ -143,6 +143,7 @@ void game::handle_click(const auto mouse_pos) {
     }
     else { // exista o carte selectata, vezi ce faci cu ea
         // handle_select(mouse_pos);
+        selected_card->set_selectFlag(false);
         selected_card->action(p, turn_id, mouse_pos); // virtual! whoa!
         select_flag = false;
         selected_card = nullptr;

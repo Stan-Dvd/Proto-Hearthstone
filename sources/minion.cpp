@@ -63,7 +63,7 @@ void minion::set_deployFlag(const bool val) {
 void minion::action(player *p, bool owner, sf::Vector2f mouse_pos) {
 
     //whatever happens, deselect card. otherwise gets way too complicated
-    selectFlag = false;
+    set_selectFlag(false);
 
     if (deployFlag == false) {
         // minion is in hand. deploy minion?

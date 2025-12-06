@@ -1,8 +1,6 @@
 #ifndef MINION_HPP
 #define MINION_HPP
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include "constants.hpp"
 #include "card.hpp"
 #include "ResourceManager.hpp"
 

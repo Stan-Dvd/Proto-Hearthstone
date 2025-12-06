@@ -1,8 +1,6 @@
 #include "card.hpp"
 
 #include "minion.hpp"
-#include "player.hpp"
-#include <cmath>
 
 card::card(const int cost, std::string texture):
                     cost(cost), selectFlag(false),
@@ -13,23 +11,25 @@ card::card(const int cost, std::string texture):
     // pow_txt.setFillColor(sf::Color::Black);
     cost_txt.setString(std::to_string(cost));
     cost_txt.setCharacterSize(FONT_SIZE);
+    flavor_txt.setString("");
+    flavor_txt.setCharacterSize(FONT_SIZE * FLAVOR_SCALE);
     // cost_txt.setFillColor(sf::Color::Black);
 }
 
     card::card (const card &model):
             cost(model.cost), selectFlag(model.selectFlag),
             card_sprite(model.card_sprite.getTexture()),
-            cost_txt(model.cost_txt), flavor_txt(model.cost_txt) {
+            cost_txt(model.cost_txt), flavor_txt(model.flavor_txt) {
         // std::cout << "card copied";
 } // COPY constructor
 
 card::~card() {
-        sf::Texture blankT = sf::Texture();
-        sf::Font blankF = sf::Font();
+        const sf::Texture blankT = sf::Texture();
+        const sf::Font blankF = sf::Font();
         // nu ma lasa sa pun pur si simplu Texture() in functie ughh
         card_sprite.setTexture(blankT);
         cost_txt.setFont(blankF);
-    }
+}
 
 // GET/SETTERS
 
@@ -59,6 +59,7 @@ int card::is_playable(int mana) {
 
 // NVI
 void card::draw(sf::RenderWindow &window, const float x, const float y) {
+    //TODO: flavor text
     card_sprite.setPosition({x, y});
     sf::FloatRect bounds = card_sprite.getGlobalBounds();
 
@@ -66,17 +67,23 @@ void card::draw(sf::RenderWindow &window, const float x, const float y) {
     float new_y = bounds.position.y + bounds.size.y * 0.01f;
     cost_txt.setPosition({new_x, new_y});
 
+    new_x = bounds.position.x + bounds.size.x * 0.18f;
+    new_y = bounds.position.y + bounds.size.y * 0.7f;
+    flavor_txt.setPosition({new_x, new_y});
+
     window.draw(card_sprite);
     window.draw(cost_txt);
+    window.draw(flavor_txt);
 
     draw_details(window);
 }
 
 //NVI
 void card::setScale(const float x, const float y) {
-        card_sprite.setScale({x, y});
-        cost_txt.setScale({x, y});
-        setDetailscale(x, y);
+    card_sprite.setScale({x, y});
+    cost_txt.setScale({x, y});
+    flavor_txt.setScale({x, y});
+    setDetailscale(x, y);
 }
 
 

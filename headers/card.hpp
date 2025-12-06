@@ -15,12 +15,13 @@ class player;
 
 class card {
 protected:
-    int cost;
-    bool selectFlag;
     sf::Sprite card_sprite; // need to draw details in child class
+    sf::Text flavor_txt; // need to redefine for every child
 
 private:
-    sf::Text cost_txt, flavor_txt;
+    int cost;
+    bool selectFlag;
+    sf::Text cost_txt;
 
 public:
 
