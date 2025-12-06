@@ -3,7 +3,7 @@
 
 player::player(const int id) :
     maxMana(1), curMana(1), health(10), player_id(id), active(false),
-    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(id),
+    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(),
     mana_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     hp_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     mana_sprite(ResourceManager::Instance().getTexture("crystal.png")),
@@ -13,9 +13,17 @@ player::player(const int id) :
     hand.reserve(10); // max hand size is 10
     board.reserve(7); //max minions on board is 7
 }
-player::~player() = default;
+player::~player() {
+    unsigned int i;
+    for (i=0; i<hand.size(); ++i) {
+        delete hand[i];
+    }
+    for (i=0; i<board.size(); ++i) {
+        delete board[i];
+    }
+};
 
-void player::deck_init( const card *card_pool, const int *card_freq, const int pool_size) {
+void player::deck_init( card* *card_pool, const int *card_freq, const int pool_size) {
     p_deck.deck_init(card_pool, card_freq, pool_size);
     // nu imi place asta
 }
@@ -35,17 +43,22 @@ void player::playCard( const unsigned int poz ) {
         std::cout << "board is full\n";
         return;
     }
-    if (hand[poz].is_playable(curMana)) { // check if player has enough mana
-        board.push_back(hand[poz]); //place card on board
-        board[board.size() - 1].setScale(BOARD_SCALE, BOARD_SCALE);
-        curMana = curMana - hand[poz].getCost(); // pay mana cost
+    if (hand[poz]->is_playable(curMana)) { // check if player has enough mana
+        board.push_back( static_cast<minion*>(hand[poz]) ); //place card on board
+        board[board.size() - 1]->setScale(BOARD_SCALE, BOARD_SCALE);
+        board[board.size() - 1]->set_selectFlag(false);
+        board[board.size() - 1]->set_atkFlag(true);
+        board[board.size() - 1]->set_deployFlag(true);
+
+        curMana = curMana - hand[poz]->getCost(); // pay mana cost
         //DELETE card from hand (in a very scuffed way because pointers)
         hand.erase(hand.begin() + poz);
+        return;
     }
     std::cout << "not enough mana!\n";
 }
 
-void player::playCard( card* atk ) {
+void player::deployMinion( minion* atk ) {
     // if (!active) {
     //     std::cout << "player inactive!\n";
     //     return;
@@ -57,19 +70,23 @@ void player::playCard( card* atk ) {
     //     return;
     // }
     if (board.size() >= 7) {
+        //TODO: full exception
         std::cout << "board is full\n";
         return;
     }
     if (atk->is_playable(curMana)) { // check if player has enough mana
+        //TODO: mana exception
         atk->set_selectFlag(false);
         atk->set_atkFlag(true);
-        board.push_back(*atk); //place card on board
-        board[board.size() - 1].setScale(BOARD_SCALE, BOARD_SCALE);
-        board[board.size() - 1].set_deployFlag(true);
+        atk->set_deployFlag(true);
+        atk->setScale(BOARD_SCALE, BOARD_SCALE);
+
+        board.push_back(atk); //place card on board
         curMana = curMana - atk->getCost(); // pay mana cost
+
         //DELETE card from hand (in a very scuffed way because pointers)
         for (unsigned int i=0; i < hand.size(); ++i) {
-            if (&hand[i] == atk) {
+            if (hand[i] == atk) {
                 hand.erase(hand.begin() + i);
                 std::cout << "played card" << i << "from hand\n";
             }
@@ -96,80 +113,80 @@ void player::takeDMG(int dmg) {
     health -= dmg;
 }
 
-void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
-    //TODO: remove - old, used before sfml
+//void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
+//    //TODO: remove - old, used before sfml
+//
+//    if (atk_poz > board.size()-1) {
+//        std::cout << "own minion beyond board!\n";
+//        return;
+//    }
+//    if (targ_poz > p2.board.size()-1) {
+//        std::cout << "enemy minion beyond board!\n";
+//        return;
+//    }
+//    if (hand[atk_poz].check_atkFlag()) {
+//        std::cout << "minion has already attacked!\n";
+//        return;
+//    }
+//    hand[atk_poz].attack(&p2.getMinion(targ_poz));
+//    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
+//    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
+//    this->checkBoard();
+//    p2.checkBoard();
+//}
 
-    if (atk_poz > board.size()-1) {
-        std::cout << "own minion beyond board!\n";
-        return;
-    }
-    if (targ_poz > p2.board.size()-1) {
-        std::cout << "enemy minion beyond board!\n";
-        return;
-    }
-    if (hand[atk_poz].check_atkFlag()) {
-        std::cout << "minion has already attacked!\n";
-        return;
-    }
-    hand[atk_poz].attack(&p2.getMinion(targ_poz));
-    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
-    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
-    this->checkBoard();
-    p2.checkBoard();
-
-}
-
-void player::atkMinion(player &p2, card* atk, card* target) {
-// TODO: can be removed, logic moved to card::action
-
-    // if (atk->check_atkFlag()) { // logic MOVED to card::action
-    //     std::cout << "minion has already attacked!\n";
-    //     return;
-    // }
-    atk->attack(target);
-    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
-    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
-    this->checkBoard();
-    p2.checkBoard();
-}
-
+//void player::atkMinion(player &p2, card* atk, card* target) {
+//// TODO: can be removed, logic moved to card::action
+//
+//    // if (atk->check_atkFlag()) { // logic MOVED to card::action
+//    //     std::cout << "minion has already attacked!\n";
+//    //     return;
+//    // }
+//    atk->attack(target);
+//    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
+//    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
+//    this->checkBoard();
+//    p2.checkBoard();
+//}
 
 
-void player::atkPlayer(player &p2, const unsigned int atk_poz) {
-//TODO: remove - old, used before sfml
 
-    if (atk_poz > board.size()-1) {
-        std::cout << "minion beyond board!\n";
-        return;
-    }
-    if (board[atk_poz].check_atkFlag()) {
-        std::cout << "minion has already attacked!\n";
-        return;
-    }
-    p2.takeDMG( board[atk_poz].getPower() );
-    board[atk_poz].set_atkFlag(true);
-    // ulog << "attacked player with minion " << atk_poz << '\n';
-    std::cout << "attacked player with minion " << atk_poz << '\n';
-}
+//void player::atkPlayer(player &p2, const unsigned int atk_poz) {
+////TODO: remove - old, used before sfml
+//
+//    if (atk_poz > board.size()-1) {
+//        std::cout << "minion beyond board!\n";
+//        return;
+//    }
+//    if (board[atk_poz].check_atkFlag()) {
+//        std::cout << "minion has already attacked!\n";
+//        return;
+//    }
+//    p2.takeDMG( board[atk_poz].getPower() );
+//    board[atk_poz].set_atkFlag(true);
+//    // ulog << "attacked player with minion " << atk_poz << '\n';
+//    std::cout << "attacked player with minion " << atk_poz << '\n';
+//}
+//
+//void player::atkPlayer(player &p2, card* atk) {
+//    //TODO: can remove, logic moved to card::action
+//
+//    // if (atk_poz > board.size()-1) {
+//    //     std::cout << "minion beyond board!\n";
+//    //     return;
+//    // }
+//    if (atk->check_atkFlag()) {
+//        std::cout << "minion has already attacked!\n";
+//        return;
+//    }
+//    p2.takeDMG( atk->getPower() );
+//    atk->set_atkFlag(true);
+//    // ulog << "attacked player with minion " << atk_poz << '\n';
+//    // std::cout << "attacked player with minion " << atk_poz << '\n';
+//}
 
-void player::atkPlayer(player &p2, card* atk) {
-    //TODO: can remove, logic moved to card::action
-
-    // if (atk_poz > board.size()-1) {
-    //     std::cout << "minion beyond board!\n";
-    //     return;
-    // }
-    if (atk->check_atkFlag()) {
-        std::cout << "minion has already attacked!\n";
-        return;
-    }
-    p2.takeDMG( atk->getPower() );
-    atk->set_atkFlag(true);
-    // ulog << "attacked player with minion " << atk_poz << '\n';
-    // std::cout << "attacked player with minion " << atk_poz << '\n';
-}
-
-card& player::getMinion(const unsigned int poz) { // a minion is a card on the board
+//TODO: obsolete I think
+card* player::getMinion(const unsigned int poz) { // a minion is a card on the board
     if (poz > board.size()-1) {
         std::cout << "minion beyond board!\n";
         // return card(0, 0, 0);
@@ -178,10 +195,19 @@ card& player::getMinion(const unsigned int poz) { // a minion is a card on the b
     return board[poz];
 }
 
+card *player::getCard(const unsigned int poz) {
+    if (poz > hand.size()) {
+        std::cout << "nu nu";
+    }
+    return hand[poz];
+}
+
+
 void player::checkBoard() {
     // removes dead minions from board
     for (unsigned int i=0; i < board.size(); ++i) {
-        if (board[i].getHealth() <= 0 ) {
+        if (board[i]->getHealth() <= 0 ) {
+            delete board[i];
             board.erase(board.begin() + i);
             // ulog << "Minion " << i << " has died\n";
             std::cout << "Minion " << i << " has died\n";
@@ -200,29 +226,45 @@ void player::endTurn() {
         maxMana += 1;
     curMana = maxMana;
     active = false;
-    for (card &card : board) {
-        card.set_atkFlag(false);
+    for (minion *card : board) {
+        card->set_atkFlag(false);
         //reset all minions on board
     }
 }
 
-card* player::selectCard(const sf::Vector2f mouse_pos) {
+card* player::selectHand(const sf::Vector2f mouse_pos) {
     //search hand
     for (unsigned int i=0; i<hand.size(); ++i) {
-        if ( hand[i].getGlobalBounds().contains(mouse_pos) ) {
+        if ( hand[i]->getGlobalBounds().contains(mouse_pos) ) {
             // hand[i].set_selectFlag(true);
-            return &hand[i];
-        }
-    }
-    //search board
-    for (unsigned int i=0; i<board.size(); ++i) {
-        if ( board[i].getGlobalBounds().contains(mouse_pos) ) {
-            // board[i].set_selectFlag(true);
-            return &board[i];
+            return hand[i];
         }
     }
     return nullptr;
 }
+
+minion* player::selectBoard(const sf::Vector2f mouse_pos) {
+    for (unsigned int i=0; i<board.size(); ++i) {
+        if ( board[i]->getGlobalBounds().contains(mouse_pos) ) {
+            // board[i].set_selectFlag(true);
+            return board[i];
+        }
+    }
+    return nullptr;
+}
+
+card* player::selectCard(const sf::Vector2f mouse_pos) {
+    //asta e kinda stupid
+
+    card* select;
+    select = selectHand(mouse_pos);
+    if ( select != nullptr ) {
+        return select;
+    }
+    return selectBoard(mouse_pos);
+}
+
+
 
 bool player::selectPlayer(const sf::Vector2f mouse_pos) {
     if (hp_sprite.getGlobalBounds().contains(mouse_pos))
@@ -293,20 +335,22 @@ void player::setStartPos(const sf::RenderWindow &window) {
 }
 
 void player::drawHand(sf::RenderWindow &window) {
+    //naspa pt ca if-uri da nuj cum altucmva sa fac
+
     if (player_id == 1) {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            if (hand[i].check_selectFlag())
-                hand[i].draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - SELECT_OFFSET);
+            if (hand[i]->check_selectFlag())
+                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - SELECT_OFFSET);
             else
-                hand[i].draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
         }
     }
     else {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            if (hand[i].check_selectFlag())
-                hand[i].draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + SELECT_OFFSET);
+            if (hand[i]->check_selectFlag())
+                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + SELECT_OFFSET);
             else
-                hand[i].draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
         }
     }
 }
@@ -314,18 +358,18 @@ void player::drawHand(sf::RenderWindow &window) {
 void player::drawBoard(sf::RenderWindow &window) {
     if (player_id == 1) {
         for (unsigned int i=0; i < board.size(); ++i) {
-            if (board[i].check_selectFlag())
-                board[i].draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - SELECT_OFFSET/1.6);
+            if (board[i]->check_selectFlag())
+                board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - SELECT_OFFSET/1.6);
             else
-            board[i].draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
+            board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
         }
     }
     else {
         for (unsigned int i=0; i < board.size(); ++i) {
-            if (board[i].check_selectFlag())
-                board[i].draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + SELECT_OFFSET/1.6);
+            if (board[i]->check_selectFlag())
+                board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + SELECT_OFFSET/1.6);
             else
-                board[i].draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
+                board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
 
         }
     }
@@ -348,18 +392,39 @@ void player::drawPlayer(sf::RenderWindow &window) {
     this->drawManaHp(window);
 }
 
-std::ostream& operator<< (std::ostream &os, const player &p1) {
-    os << "act:" << p1.active;
-    os << " MCap:" << p1.maxMana;
-    os << " M:" << p1.curMana;
-    os << " hp:" << p1.health;
-    os << '\n' << "hand: " << p1.hand.size() << " cards\n";
-    for (unsigned int i=0; i < p1.hand.size(); ++i)
-        os << i << p1.hand[i] << "||";
-    os << '\n' << "board: " << p1.board.size() << " minions\n";
-    for (const card& card : p1.board)
-        os << card << "||";
-    os << '\n' << "deck: ";
-    os << p1.p_deck << "\n\n";
-    return os;
+void player::display() {
+    std::cout << "act:" << active << " MM:" << maxMana << " M:" << curMana;
+    std::cout << " HP:" << health << " Hand: " << hand.size() << " cards\n";
+    for (unsigned int i=0; i<hand.size(); ++i) {
+        std::cout << i;
+        hand[i]->display();
+        std::cout << "||";
+    }
+    std::cout << "\nBoard: " << board.size() << " cards\n";
+    for (unsigned int i=0; i<board.size(); ++i) {
+        std::cout << i;
+        board[i]->display();
+        std::cout << "||";
+    }
+    std::cout << "\nDeck: ";
+    p_deck.display();
+    std::cout << "\n\n";
+
 }
+
+
+// std::ostream& operator<< (std::ostream &os, const player &p1) {
+//     os << "act:" << p1.active;
+//     os << " MCap:" << p1.maxMana;
+//     os << " M:" << p1.curMana;
+//     os << " hp:" << p1.health;
+//     os << '\n' << "hand: " << p1.hand.size() << " cards\n";
+//     for (unsigned int i=0; i < p1.hand.size(); ++i)
+//         os << i << p1.hand[i] << "||";
+//     os << '\n' << "board: " << p1.board.size() << " minions\n";
+//     for (const card& card : p1.board)
+//         os << card << "||";
+//     os << '\n' << "deck: ";
+//     os << p1.p_deck << "\n\n";
+//     return os;
+// }

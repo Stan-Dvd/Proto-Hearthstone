@@ -22,14 +22,15 @@ game::game() :
     const float scale_y = static_cast<float>(window_size.y) / static_cast<float>(texture_size.y);
     Board.scale({scale_x, scale_y});
 
+    //setup turn button
     turn_button.setPosition({static_cast<float>(window_size.x) * 0.76f,
                         static_cast<float>(window_size.y) * 0.43f});
     turn_button.setScale({0.7f, 0.7f});
-
+    //setup text box
     text_box.setPosition({ static_cast<float>(window_size.x) * 0.02f,
                             static_cast<float>(window_size.y) * 0.3f});
     text_box.setFillColor(sf::Color::Black);
-
+    //setup text
     text.setPosition({static_cast<float>(window_size.x) * 0.03f,
                         static_cast<float>(window_size.y) * 0.31f});
     text.setCharacterSize(TEXTBOX_FONT);
@@ -40,8 +41,8 @@ game::game() :
     p[0].startTurn();
 }
 
-void game::init(const card *card_pool1, const int *card_freq1, const int pool_size1,
-                const card *card_pool2, const int *card_freq2, const int pool_size2) {
+void game::init(card* *card_pool1, const int *card_freq1, const int pool_size1,
+                card* *card_pool2, const int *card_freq2, const int pool_size2) {
     p[0].deck_init(card_pool1, card_freq1, pool_size1);
     p[1].deck_init(card_pool2, card_freq2, pool_size2);
     for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
@@ -86,6 +87,38 @@ void game::switchTurn() {
     // }
 }
 
+// void game::handle_select(const auto mouse_pos) {
+// //TODO: remove
+//
+//     selected_card->set_selectFlag(false); //orice se intampla, nu mai e selectata dupa
+//
+//     if (selected_card->check_deployFlag() == false) { //selected card is in and
+//         //TODO: replace with call to action function in card class
+//         if ( p[turn_id].getBoardBounds().contains(mouse_pos) )
+//             //see if player clicked the board
+//             p[turn_id].playCard(selected_card);
+//
+//     }
+//     else { //selected card is on a board
+//         card *target;
+//         //TODO: eventual fa cu exceptii in loc de nullptr
+//         if (turn_id == 0) {
+//             target = p[1].selectCard(mouse_pos);
+//             if (target != nullptr)
+//                 p[0].atkMinion(p[1], selected_card, target);
+//             else if (p[1].selectPlayer(mouse_pos))
+//                 p[0].atkPlayer(p[1], selected_card);
+//         }
+//         else {
+//             target = p[0].selectCard(mouse_pos);
+//             if (target != nullptr)
+//                 p[1].atkMinion(p[0], selected_card, target);
+//             else if (p[0].selectPlayer(mouse_pos))
+//                 p[1].atkPlayer(p[0], selected_card);
+//         }
+//     }
+// }
+
 void game::selectCard(const auto mouse_pos) {
     //player whose turn it is selects a card
     selected_card = p[turn_id].selectCard(mouse_pos);
@@ -94,42 +127,10 @@ void game::selectCard(const auto mouse_pos) {
         select_flag = true;
         selected_card->set_selectFlag(true);
         text.setString("Selected Card!");
-        std::cout << *selected_card << '\n';
+        selected_card->display(1);
     }
     else {
         text.setString("no card clicked!");
-    }
-}
-
-void game::handle_select(const auto mouse_pos) {
-//TODO: remove
-
-    selected_card->set_selectFlag(false); //orice se intampla, nu mai e selectata dupa
-
-    if (selected_card->check_deployFlag() == false) { //selected card is in and
-        //TODO: replace with call to action function in card class
-        if ( p[turn_id].getBoardBounds().contains(mouse_pos) )
-            //see if player clicked the board
-            p[turn_id].playCard(selected_card);
-
-    }
-    else { //selected card is on a board
-        card *target;
-        //TODO: eventual fa cu exceptii in loc de nullptr
-        if (turn_id == 0) {
-            target = p[1].selectCard(mouse_pos);
-            if (target != nullptr)
-                p[0].atkMinion(p[1], selected_card, target);
-            else if (p[1].selectPlayer(mouse_pos))
-                p[0].atkPlayer(p[1], selected_card);
-        }
-        else {
-            target = p[0].selectCard(mouse_pos);
-            if (target != nullptr)
-                p[1].atkMinion(p[0], selected_card, target);
-            else if (p[0].selectPlayer(mouse_pos))
-                p[1].atkPlayer(p[0], selected_card);
-        }
     }
 }
 

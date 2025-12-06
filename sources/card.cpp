@@ -1,33 +1,25 @@
 #include "card.hpp"
+
+#include "minion.hpp"
 #include "player.hpp"
 #include <cmath>
 
-card::card(int cost, int pow, int hp, std::string texture):
-                    cost(cost), power(pow), health(hp),
-                    attackFlag(false), selectFLag(false), deployFlag(false),
+card::card(const int cost, std::string texture):
+                    cost(cost), selectFlag(false),
                     card_sprite(ResourceManager::Instance().getTexture(texture)),
-                    hp_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
-                    pow_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
-                    cost_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
-        {
-            hp_txt.setString(std::to_string(health));
-            hp_txt.setCharacterSize(FONT_SIZE);
-            // hp_txt.setFillColor(sf::Color::Black);
-            pow_txt.setString(std::to_string(power));
-            pow_txt.setCharacterSize(FONT_SIZE);
-            // pow_txt.setFillColor(sf::Color::Black);
-            cost_txt.setString(std::to_string(cost));
-            cost_txt.setCharacterSize(FONT_SIZE);
-            // cost_txt.setFillColor(sf::Color::Black);
-        }
+                    cost_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
+                    flavor_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
+{
+    // pow_txt.setFillColor(sf::Color::Black);
+    cost_txt.setString(std::to_string(cost));
+    cost_txt.setCharacterSize(FONT_SIZE);
+    // cost_txt.setFillColor(sf::Color::Black);
+}
 
     card::card (const card &model):
-            cost(model.cost), power(model.power), health(model.health),
-            attackFlag(model.attackFlag), selectFLag(model.selectFLag), deployFlag(model.deployFlag),
+            cost(model.cost), selectFlag(model.selectFlag),
             card_sprite(model.card_sprite.getTexture()),
-            hp_txt(model.hp_txt),
-            pow_txt(model.pow_txt),
-            cost_txt(model.cost_txt) {
+            cost_txt(model.cost_txt), flavor_txt(model.cost_txt) {
         // std::cout << "card copied";
 } // COPY constructor
 
@@ -36,8 +28,6 @@ card::~card() {
         sf::Font blankF = sf::Font();
         // nu ma lasa sa pun pur si simplu Texture() in functie ughh
         card_sprite.setTexture(blankT);
-        hp_txt.setFont(blankF);
-        pow_txt.setFont(blankF);
         cost_txt.setFont(blankF);
     }
 
@@ -46,81 +36,17 @@ card::~card() {
 int card::getCost() {
     return cost;
 }
-int card::getPower() {
-    return power;
-}
-int card::getHealth() {
-    return health;
-}
 
 sf::FloatRect card::getGlobalBounds() {
     return card_sprite.getGlobalBounds();
 }
 
-bool card::check_atkFlag() {
-    return attackFlag;
-}
-bool card::check_deployFlag() {
-    return deployFlag;
-}
-
 bool card::check_selectFlag() {
-    return selectFLag;
-}
-
-
-void card::set_atkFlag(const bool val) {
-    attackFlag = val;
+    return selectFlag;
 }
 
 void card::set_selectFlag(const bool val) {
-    selectFLag = val;
-}
-
-void card::set_deployFlag(const bool val) {
-    deployFlag = val;
-}
-
-void card::action(player *p, bool owner, sf::Vector2f mouse_pos) {
-    //TODO: make pure virtual, move this to MINION class
-
-    if (deployFlag == false) {
-        // minion is in hand. deploy minion?
-        if (p[owner].getBoardBounds().contains(mouse_pos))
-            p[owner].playCard(this);
-    }
-    else {
-        //minion is on board. attack?
-        if (attackFlag == true) {
-            std::cout << "minion has already attacked / is not ready";
-            return;
-        }
-
-        card *target = p[!owner].selectCard(mouse_pos);
-        // TODO: implement noselect exception
-        if (target != nullptr) {
-            // if target is enemy minion
-            attackFlag = true;
-            attack(target);
-            p[0].checkBoard();
-            p[1].checkBoard();
-            std::cout << "minion of player " << !owner << "attacked";
-        }
-        else if (p[!owner].selectPlayer(mouse_pos)) {
-            attackFlag = true;
-            p[!owner].takeDMG(power);
-            std::cout << "player " << !owner << " attacked";
-        }
-    }
-    //whatever happens, deselect card. otherwise gets way too complicated
-    selectFLag = false;
-}
-
-
-void card::attack(card *target) {
-    target->health -= power;
-    health -= target->power;
-    // both cards damage each-other
+    selectFlag = val;
 }
 
 int card::is_playable(int mana) {
@@ -130,6 +56,8 @@ int card::is_playable(int mana) {
 }
 
 //SFML
+
+// NVI
 void card::draw(sf::RenderWindow &window, const float x, const float y) {
     card_sprite.setPosition({x, y});
     sf::FloatRect bounds = card_sprite.getGlobalBounds();
@@ -137,27 +65,19 @@ void card::draw(sf::RenderWindow &window, const float x, const float y) {
     float new_x = bounds.position.x + bounds.size.x * 0.08f;
     float new_y = bounds.position.y + bounds.size.y * 0.01f;
     cost_txt.setPosition({new_x, new_y});
-    new_x = bounds.position.x + bounds.size.x * 0.11f;
-    new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
-    pow_txt.setPosition({new_x, new_y});
-    pow_txt.setString(std::to_string(power));
-    new_x = bounds.position.x + bounds.size.x - bounds.size.x * 0.16f;
-    new_y = bounds.position.y + bounds.size.y - bounds.size.y * 0.19f;
-    hp_txt.setPosition({new_x, new_y});
-    hp_txt.setString(std::to_string(health));
 
     window.draw(card_sprite);
-    window.draw(hp_txt);
     window.draw(cost_txt);
-    window.draw(pow_txt);
+
+    draw_details(window);
 }
 
+//NVI
 void card::setScale(const float x, const float y) {
         card_sprite.setScale({x, y});
-        hp_txt.setScale({x, y});
-        pow_txt.setScale({x, y});
         cost_txt.setScale({x, y});
-    }
+        setDetailscale(x, y);
+}
 
 
 // OPERATORS
@@ -173,14 +93,17 @@ void card::setScale(const float x, const float y) {
     //     cost_txt = model.cost_txt;
     //     return *this;
     // }
-std::ostream& operator<< (std::ostream &os, const card &card) {
-    os << "c:"<< card.cost;
-    os << " pwr:" << card.power;
-    os << " hp:" << card.health;
-    os << " Dflg: " << card.deployFlag;
-    os << " Aflg:" << card.attackFlag;
-    os << " Sflg:" << card.selectFLag;
+// std::ostream& operator<< (std::ostream &os, const card &card) {
+//     os << "c:"<< card.cost;
+//     os << " Sflg:" << card.selectFLag;
+//     // os << " ";
+//     return os;
+// }
 
-    // os << " ";
-    return os;
+void card::display(const bool &endl) {
+    std::cout << "C:" << cost;
+    displayDetails();
+    std::cout << " Sf:" << selectFlag;
+    if (endl)
+        std::cout << '\n';
 }

@@ -5,7 +5,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "card.hpp"
+#include "minion.hpp"
 #include "player.hpp"
 
 class game{
@@ -21,8 +21,8 @@ private:
 
 public:
     game();
-    void init(const card *card_pool1, const int *card_freq1, const int pool_size1,
-                const card *card_pool2, const int *card_freq2, const int pool_size2);
+    void init(card* *card_pool1, const int *card_freq1, const int pool_size1,
+                card* *card_pool2, const int *card_freq2, const int pool_size2);
     void display();
     void switchTurn();
     void selectCard(const auto mouse_pos);

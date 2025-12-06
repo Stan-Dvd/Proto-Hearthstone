@@ -1,17 +1,13 @@
 #include <iostream>
-#include <array>
-#include <vector>
-#include <algorithm>
-#include <random>
-#include <fstream>
-#include <chrono>
-#include <thread>
-#include <SFML/Graphics.hpp>
+#include <memory>
 #include "headers/ResourceManager.hpp"
-// #include "card.h"
+// #include "card.hpp"
+// #include "minion.hpp"
 // #include "deck.hpp"
 // #include "player.hpp"
 #include "game.hpp"
+
+
 
 
 // class Game {
@@ -26,14 +22,16 @@
 
 int main() {
 
-    card c1(1, 3, 4);
-    card const card_pool[3]{ card(3, 4, 2) , card(2, 1, 4), card(1, 2, 1)};
+    card* card_pool[3] { new minion(3, 4, 2), new minion(2, 1, 4), new minion(1, 2, 1)};
     int const card_freq[3]{3, 3, 3};
 
     game master;
     master.init(card_pool, card_freq, 3, card_pool, card_freq, 3);
     // master.demo();
     master.run();
+
+    for (int i=0; i < 3; ++i)
+        delete card_pool[i];
 
     return 0;
 }

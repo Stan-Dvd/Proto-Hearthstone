@@ -6,33 +6,32 @@
 
 class deck {
 private:
-    std::vector<card> cards;
-    float startPosX, startPosY;
-    int player_id;
+    std::vector<card*> cards;
+//    int player_id;
 
 public:
 
     // CONSTRUCTORS
-    deck(int id);
+    deck();
 
-    deck(deck &model);
+    // deck(deck &model);
 
-    void deck_init( const card *card_pool, const int *card_freq, const int pool_size);
+    void deck_init( card* *card_pool, const int *card_freq, const int pool_size);
 
     ~deck();
 
     //GET/SETTERS
     unsigned int getSize();
-    void setCard(const int poz, const card& card);
-    void setStartPos(sf::RenderWindow window);
+    void setCard(const int poz, card* card);
+    // void setStartPos(sf::RenderWindow& window);
 
-    card getCard();
+    card* getCard();
     void shuffle();
 
-    void drawDeck(sf::RenderWindow window);
+    // void drawDeck(sf::RenderWindow& window);
 
-    friend std::ostream& operator<< (std::ostream &os, const deck &deck);
-
+//    friend std::ostream& operator<< (std::ostream &os, const deck &deck);
+    void display() const;
 };
 
 #endif //DECK_HPP

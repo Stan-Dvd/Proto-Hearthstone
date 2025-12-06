@@ -62,11 +62,13 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         sources/ResourceManager.cpp
         headers/ResourceManager.hpp
         headers/card.hpp
+        headers/minion.hpp
         headers/deck.hpp
         headers/player.hpp
         headers/game.hpp
         headers/constants.hpp
         sources/card.cpp
+        sources/minion.cpp
         sources/deck.cpp
         sources/player.cpp
         sources/game.cpp
