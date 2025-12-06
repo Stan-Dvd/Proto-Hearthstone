@@ -30,6 +30,7 @@ public:
     void remove_fromHand(const card* card);
     void drawFromDeck();
     void takeDMG(const int dmg);
+    void heal(const int val);
     void payCost(const int cost);
     card* getMinion(const unsigned int poz);
     card* getCard(const unsigned int poz) const;

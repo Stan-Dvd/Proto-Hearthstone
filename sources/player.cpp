@@ -112,6 +112,10 @@ void player::takeDMG(int dmg) {
     health -= dmg;
 }
 
+void player::heal(const int val) {
+    health += val;
+}
+
 void player::payCost(const int cost) {
     if (cost > curMana) {
         throw mana_exception(cost - curMana);

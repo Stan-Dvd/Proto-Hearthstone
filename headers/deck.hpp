@@ -1,5 +1,6 @@
 #ifndef DECK_HPP
 #define DECK_HPP
+#include <random>
 #include <vector>
 
 #include "card.hpp"
@@ -7,7 +8,7 @@
 class deck {
 private:
     std::vector<card*> cards;
-//    int player_id;
+    //    int player_id;
 
 public:
 

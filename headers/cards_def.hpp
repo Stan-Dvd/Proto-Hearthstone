@@ -17,4 +17,11 @@ public:
     card* clone() override{ return new pot_of_greed(*this); }
 };
 
+class mend_wounds : public spell {
+public:
+    mend_wounds() : spell(2, "Mend Wounds", "Heal 3 hp"){};
+    void action(player *p, bool owner, sf::Vector2f mouse_pos) override;
+    card* clone() override { return new mend_wounds(*this); };
+};
+
 #endif //CARDS_DEF_HPP

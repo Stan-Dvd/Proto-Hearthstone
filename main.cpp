@@ -24,12 +24,12 @@
 
 int main() {
 
-    card* card_pool[5] { new minion(3, 4, 2), new minion(2, 1, 4),
-                        new minion(1, 2, 1), new fireball(), new pot_of_greed()};
-    int const card_freq[5]{2, 2, 2, 2, 2};
+    card* card_pool[6] { new minion(3, 4, 2), new minion(2, 1, 4),
+                        new minion(1, 2, 1), new fireball(), new pot_of_greed(), new mend_wounds()};
+    int const card_freq[6]{3, 3, 3, 2, 2, 2};
 
     game master;
-    master.init(card_pool, card_freq, 5, card_pool, card_freq, 5);
+    master.init(card_pool, card_freq, 6, card_pool, card_freq, 6);
     // master.demo();
     master.run();
 

@@ -23,5 +23,6 @@
 
 //card specific:
 #define FIREBALL_DMG 2
+#define MEND_WOUNDS_HEAL 3
 
 #endif //CONSTANTS_H

@@ -34,3 +34,25 @@ void pot_of_greed::action(player *p, const bool owner, const sf::Vector2f mouse_
     throw target_exception("friendly board");
 
 }
+
+void mend_wounds::action(player *p, bool owner, sf::Vector2f mouse_pos) {
+
+    if (p[owner].selectPlayer(mouse_pos)) {
+        p[owner].payCost(this->getCost()); //can throw mana exception
+
+        p[owner].heal(MEND_WOUNDS_HEAL);
+        p[owner].remove_fromHand(this);
+        return;
+    }
+    //check if minion is target
+    minion* target = p[owner].selectBoard(mouse_pos);
+    if ( target != nullptr ) {
+        p[owner].payCost(this->getCost()); //can throw mana exception
+
+        target->heal(MEND_WOUNDS_HEAL);
+        p[owner].remove_fromHand(this);
+        return;
+    }
+    throw target_exception("friendly");
+}
+

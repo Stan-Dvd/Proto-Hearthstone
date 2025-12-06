@@ -67,7 +67,12 @@ void game::display() {
 
 void game::switchTurn() {
     p[turn_id].endTurn();
-    p[!turn_id].startTurn();
+    try {
+        p[!turn_id].startTurn();
+    }catch (GameMessage &e) {
+        std::cout << "from swTurn:\n" << e.what();
+        message.setString(e.what());
+    }
     turn_button.setTexture(ResourceManager::Instance().getTexture( !turn_id ? TURN_P2_T : TURN_P1_T ));
     message.setString( !turn_id ? "Current turn: P2" : "Current turn: P1");
     turn_id = !turn_id;

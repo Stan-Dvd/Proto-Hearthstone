@@ -64,7 +64,8 @@ card* deck::getCard() {
 }
 
 void deck::shuffle() {
-    auto rng = std::default_random_engine {};
+    auto rd = std::random_device{};
+    auto rng = std::default_random_engine { rd() };
     std::ranges::shuffle(cards, rng);
 }
 
