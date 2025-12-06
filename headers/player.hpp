@@ -32,22 +32,17 @@ public:
     void takeDMG(const int dmg);
     void payCost(const int cost);
     card* getMinion(const unsigned int poz);
-    card* getCard(const unsigned int poz);
+    card* getCard(const unsigned int poz) const;
+    unsigned int getBoardSize() const;
     void checkBoard();
     void startTurn();
     void endTurn();
 
-    //TODO: obsolete
-    // void atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz); //debug
-    // void atkMinion(player &p2, card* atk, card* target);
-    // void atkPlayer(player &p2, const unsigned int atk_poz); //debug
-    // void atkPlayer(player &p2, card* atk);
-
     //MOUSE CHECKS
-    card* selectHand(const sf::Vector2f mouse_pos);
-    minion* selectBoard(const sf::Vector2f mouse_pos);
-    card* selectCard(const sf::Vector2f mouse_pos);
-    bool selectPlayer(const sf::Vector2f mouse_pos);
+    card* selectHand(const sf::Vector2f mouse_pos) const;
+    minion* selectBoard(const sf::Vector2f mouse_pos) const;
+    card* selectCard(const sf::Vector2f mouse_pos) const;
+    bool selectPlayer(const sf::Vector2f mouse_pos) const;
 
     //SPRITE/DRAW stuff
     void setStartPos(const sf::RenderWindow &window);

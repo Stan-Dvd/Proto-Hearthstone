@@ -37,17 +37,17 @@ minion::~minion() {
 
 // GET/SETTERS
 
-int minion::getPower() {
+int minion::getPower() const{
     return power;
 }
-int minion::getHealth() {
+int minion::getHealth() const{
     return health;
 }
 
-bool minion::check_atkFlag() {
+bool minion::check_atkFlag() const{
     return attackFlag;
 }
-bool minion::check_deployFlag() {
+bool minion::check_deployFlag() const{
     return deployFlag;
 }
 
@@ -59,51 +59,55 @@ void minion::set_deployFlag(const bool val) {
     deployFlag = val;
 }
 
-void minion::buff(const bool val) {
+void minion::buff(const int val) {
     power += val;
 }
 
-void minion::heal(const bool val) {
+void minion::heal(const int val) {
     health += val;
 }
 
-void minion::takeDMG(const bool val) {
+void minion::takeDMG(const int val) {
     health -= val;
 }
 
-void minion::action(player *p, bool owner, sf::Vector2f mouse_pos) {
+void minion::action(player *p, const bool owner, const sf::Vector2f mouse_pos) {
 
     //whatever happens, deselect card. otherwise gets way too complicated
     // set_selectFlag(false); this happens in game now
 
     if (deployFlag == false) {
         // minion is in hand. deploy minion?
-        if (p[owner].getBoardBounds().contains(mouse_pos))
-            p[owner].deployMinion(this);
-    }
-    else {
-        //minion is on board. attack?
-        if (attackFlag == true) {
-            std::cout << "minion has already attacked / is not ready\n";
+        if (p[owner].getBoardBounds().contains(mouse_pos)) {
+            p[owner].deployMinion(this); //can throw mana exc
             return;
         }
-
-        minion *target = p[!owner].selectBoard(mouse_pos);
-        // TODO: implement noselect exception
-        if (target != nullptr) {
-            // if target is enemy minion
-            attackFlag = true;
-            attack(target);
-            p[0].checkBoard();
-            p[1].checkBoard();
-            std::cout << "minion of player " << !owner << "attacked\n";
-        }
-        else if (p[!owner].selectPlayer(mouse_pos)) {
-            attackFlag = true;
-            p[!owner].takeDMG(power);
-            std::cout << "player " << !owner << " attacked\n";
-        }
+        throw target_exception("friendly board");
     }
+
+    //minion is on board. attack?
+    if (attackFlag == true) {
+        std::cout << "minion has already attacked / is not ready\n";
+        throw ready_exception();
+    }
+
+    minion *target = p[!owner].selectBoard(mouse_pos);
+    if (target != nullptr) {
+        // if target is enemy minion
+        attackFlag = true;
+        attack(target);
+        p[0].checkBoard();
+        p[1].checkBoard();
+        std::cout << "minion of player " << !owner << " attacked\n";
+        return;
+    }
+    if (p[!owner].selectPlayer(mouse_pos)) {
+        attackFlag = true;
+        p[!owner].takeDMG(power);
+        std::cout << "player " << !owner << " attacked\n";
+        return;
+    }
+    throw ready_exception();
 }
 
 

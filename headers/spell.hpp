@@ -12,7 +12,7 @@ public:
              std::string texture = PLACEHOLDER_SPELL_TEXTURE);
     spell(const spell& model);
 
-    void action(player *p, bool owner, sf::Vector2f) override = 0;
+    void action(player *p, bool owner, sf::Vector2f mouse_pos) override = 0;
 
     void setDetailscale(const float x, const float y) override;
     void draw_details(sf::RenderWindow &window) override;

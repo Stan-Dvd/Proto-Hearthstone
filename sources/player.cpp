@@ -26,8 +26,8 @@ player::~player() {
 };
 
 void player::deck_init( card* *card_pool, const int *card_freq, const int pool_size) {
-    p_deck.deck_init(card_pool, card_freq, pool_size);
-    // nu imi place asta
+    p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
+    p_deck.shuffle();
 }
 
 void player::playCard( const unsigned int poz ) {
@@ -62,12 +62,11 @@ void player::playCard( const unsigned int poz ) {
 
 void player::deployMinion( minion* atk ) {
     if (board.size() >= 7) {
-        //TODO: overflow exception
         std::cout << "board is full\n";
+        throw overflow_exception("Board");
         return;
     }
     if (atk->is_playable(curMana)) { // check if player has enough mana
-        //TODO: mana exception
         atk->set_selectFlag(false);
         atk->set_atkFlag(true);
         atk->set_deployFlag(true);
@@ -78,8 +77,10 @@ void player::deployMinion( minion* atk ) {
 
         //DELETE card from hand (in a very scuffed way because pointers)
         remove_fromHand(atk);
+        return;
     }
     std::cout << "not enough mana!\n";
+    throw mana_exception(atk->getCost() - curMana);
 }
 
 void player::remove_fromHand(const card *card) {
@@ -93,13 +94,15 @@ void player::remove_fromHand(const card *card) {
 
 
 void player::drawFromDeck() {
+    // std::cout << p_deck.getSize() << '\n';
     if (p_deck.getSize() == 0) {
         std::cout << "deck empty!\n";
+        throw empty_exception("Deck");
         return;
     }
     if (hand.size() >= 10) {
-        std::cout << "hand is full\n";
         p_deck.getCard(); // "destroy" card you would have drawn
+        throw overflow_exception("Hand");
         return;
     }
     hand.push_back(p_deck.getCard() );
@@ -111,84 +114,11 @@ void player::takeDMG(int dmg) {
 
 void player::payCost(const int cost) {
     if (cost > curMana) {
-        throw noMana_exception(cost - curMana);
+        throw mana_exception(cost - curMana);
         return;
     }
     curMana -= cost;
 }
-
-
-//void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
-//    //TODO: remove - old, used before sfml
-//
-//    if (atk_poz > board.size()-1) {
-//        std::cout << "own minion beyond board!\n";
-//        return;
-//    }
-//    if (targ_poz > p2.board.size()-1) {
-//        std::cout << "enemy minion beyond board!\n";
-//        return;
-//    }
-//    if (hand[atk_poz].check_atkFlag()) {
-//        std::cout << "minion has already attacked!\n";
-//        return;
-//    }
-//    hand[atk_poz].attack(&p2.getMinion(targ_poz));
-//    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
-//    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
-//    this->checkBoard();
-//    p2.checkBoard();
-//}
-
-//void player::atkMinion(player &p2, card* atk, card* target) {
-//// TODO: can be removed, logic moved to card::action
-//
-//    // if (atk->check_atkFlag()) { // logic MOVED to card::action
-//    //     std::cout << "minion has already attacked!\n";
-//    //     return;
-//    // }
-//    atk->attack(target);
-//    // ulog << "attacked minion " << targ_poz << "with minion " << atk_poz << '\n';
-//    // std::cout << "attacked minion " << targ_poz << " with minion " << atk_poz << '\n';
-//    this->checkBoard();
-//    p2.checkBoard();
-//}
-
-
-
-//void player::atkPlayer(player &p2, const unsigned int atk_poz) {
-////TODO: remove - old, used before sfml
-//
-//    if (atk_poz > board.size()-1) {
-//        std::cout << "minion beyond board!\n";
-//        return;
-//    }
-//    if (board[atk_poz].check_atkFlag()) {
-//        std::cout << "minion has already attacked!\n";
-//        return;
-//    }
-//    p2.takeDMG( board[atk_poz].getPower() );
-//    board[atk_poz].set_atkFlag(true);
-//    // ulog << "attacked player with minion " << atk_poz << '\n';
-//    std::cout << "attacked player with minion " << atk_poz << '\n';
-//}
-//
-//void player::atkPlayer(player &p2, card* atk) {
-//    //TODO: can remove, logic moved to card::action
-//
-//    // if (atk_poz > board.size()-1) {
-//    //     std::cout << "minion beyond board!\n";
-//    //     return;
-//    // }
-//    if (atk->check_atkFlag()) {
-//        std::cout << "minion has already attacked!\n";
-//        return;
-//    }
-//    p2.takeDMG( atk->getPower() );
-//    atk->set_atkFlag(true);
-//    // ulog << "attacked player with minion " << atk_poz << '\n';
-//    // std::cout << "attacked player with minion " << atk_poz << '\n';
-//}
 
 //TODO: obsolete I think
 card* player::getMinion(const unsigned int poz) { // a minion is a card on the board
@@ -200,13 +130,16 @@ card* player::getMinion(const unsigned int poz) { // a minion is a card on the b
     return board[poz];
 }
 
-card *player::getCard(const unsigned int poz) {
+card *player::getCard(const unsigned int poz) const{
     if (poz > hand.size()) {
         std::cout << "nu nu";
     }
     return hand[poz];
 }
 
+unsigned int player::getBoardSize() const{
+    return board.size();
+}
 
 void player::checkBoard() {
     // removes dead minions from board
@@ -237,7 +170,7 @@ void player::endTurn() {
     }
 }
 
-card* player::selectHand(const sf::Vector2f mouse_pos) {
+card* player::selectHand(const sf::Vector2f mouse_pos) const{
     //search hand
     for (unsigned int i=0; i<hand.size(); ++i) {
         if ( hand[i]->getGlobalBounds().contains(mouse_pos) ) {
@@ -248,7 +181,7 @@ card* player::selectHand(const sf::Vector2f mouse_pos) {
     return nullptr;
 }
 
-minion* player::selectBoard(const sf::Vector2f mouse_pos) {
+minion* player::selectBoard(const sf::Vector2f mouse_pos) const{
     for (unsigned int i=0; i<board.size(); ++i) {
         if ( board[i]->getGlobalBounds().contains(mouse_pos) ) {
             // board[i].set_selectFlag(true);
@@ -258,7 +191,7 @@ minion* player::selectBoard(const sf::Vector2f mouse_pos) {
     return nullptr;
 }
 
-card* player::selectCard(const sf::Vector2f mouse_pos) {
+card* player::selectCard(const sf::Vector2f mouse_pos) const{
     //asta e kinda stupid
 
     card* select;
@@ -269,15 +202,11 @@ card* player::selectCard(const sf::Vector2f mouse_pos) {
     return selectBoard(mouse_pos);
 }
 
-
-
-bool player::selectPlayer(const sf::Vector2f mouse_pos) {
+bool player::selectPlayer(const sf::Vector2f mouse_pos) const{
     if (hp_sprite.getGlobalBounds().contains(mouse_pos))
         return true;
     return false;
 }
-
-
 
 sf::FloatRect player::getBoardBounds() const {
     sf::FloatRect bounds;

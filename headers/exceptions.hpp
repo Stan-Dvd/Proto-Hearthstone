@@ -13,34 +13,34 @@ public:
     const char* what() const noexcept override { return text.c_str(); }
 };
 
-class notReady_exception : public GameMessage {
+class ready_exception : public GameMessage {
 public:
-    notReady_exception()
+    ready_exception()
         :GameMessage("Minion not ready \nor has already attacked"){};
 };
 
-class noMana_exception : public GameMessage {
+class mana_exception : public GameMessage {
 public:
-    noMana_exception(const int dif)
+    mana_exception(const int dif)
         :GameMessage("Not enough mana! \nNeed " + std::to_string(dif) + " more!"){};
 };
 
-class noTarget_exception : public GameMessage {
+class target_exception : public GameMessage {
 public:
-    noTarget_exception(const std::string &target)
-        :GameMessage("Select " + target + " target!"){};
+    target_exception(const std::string &target)
+        :GameMessage("Select " + target + "!"){};
 };
 
 class overflow_exception : public GameMessage { //hand/board full
 public:
     overflow_exception(const std::string &object):
-        GameMessage(object + "full!"){};
+        GameMessage(object + " full!"){};
 };
 
 class empty_exception : public GameMessage {//deck empty dar hai sa fie general ig?
 public:
     empty_exception(const std::string &object = "Deck")
-        :GameMessage(object + "empty!"){};
+        :GameMessage(object + " empty!"){};
 };
 
 

@@ -9,20 +9,21 @@
 #include <exception>
 #include <SFML/Graphics.hpp>
 #include "constants.hpp"
+#include "exceptions.hpp"
 #include "ResourceManager.hpp"
 
 class player;
 //why does this work what kind of forbidden black magic is this
 
 class card {
-protected:
-    sf::Sprite card_sprite; // need to draw details in child class
-    sf::Text flavor_txt; // need to redefine for every child
-
 private:
     int cost;
     bool selectFlag;
     sf::Text cost_txt;
+
+protected:
+    sf::Sprite card_sprite; // need to draw details in child class
+    sf::Text flavor_txt; // need to redefine for every child
 
 public:
 

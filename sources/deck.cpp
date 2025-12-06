@@ -65,7 +65,7 @@ card* deck::getCard() {
 
 void deck::shuffle() {
     auto rng = std::default_random_engine {};
-    std::shuffle(std::begin(cards), std::end(cards), rng);
+    std::ranges::shuffle(cards, rng);
 }
 
 //void deck::drawDeck(sf::RenderWindow& window){

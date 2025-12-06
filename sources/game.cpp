@@ -39,17 +39,19 @@ game::game() :
 
     p[0].setStartPos(window);
     p[1].setStartPos(window);
-    p[0].startTurn();
 }
 
 void game::init(card* *card_pool1, const int *card_freq1, const int pool_size1,
                 card* *card_pool2, const int *card_freq2, const int pool_size2) {
     p[0].deck_init(card_pool1, card_freq1, pool_size1);
     p[1].deck_init(card_pool2, card_freq2, pool_size2);
+    std::cout << "drawing first cards";
     for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
         p[0].drawFromDeck();
         p[1].drawFromDeck();
     }
+    p[1].drawFromDeck();
+    p[0].startTurn();
 }
 
 void game::display() {
@@ -96,6 +98,9 @@ void game::handle_click(const auto mouse_pos) {
         selectCard(mouse_pos);
     }
     else { // exista o carte selectata, vezi ce faci cu ea
+        selected_card->set_selectFlag(false);
+        select_flag = false;
+        //indiferent, cartea va fi deselectata
         try {
             selected_card->action(p, turn_id, mouse_pos); // virtual!
         }catch (GameMessage &e) {
@@ -103,8 +108,6 @@ void game::handle_click(const auto mouse_pos) {
             message.setString(e.what()); //display message on screen
         }//fara catch aici nu ruleaza ce e mai jos and that's really important
 
-        selected_card->set_selectFlag(false);
-        select_flag = false;
         selected_card = nullptr;
     }
 }

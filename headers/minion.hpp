@@ -22,17 +22,17 @@ public:
     ~minion() override;
 
     // GET
-    int getPower();
-    int getHealth();
-    bool check_atkFlag();
-    bool check_deployFlag();
+    int getPower() const;
+    int getHealth() const;
+    bool check_atkFlag() const;
+    bool check_deployFlag() const;
 
     //SETTERS / changers
     void set_atkFlag(const bool val);
     void set_deployFlag(const bool val);
-    void buff(const bool val);
-    void heal(const bool val);
-    void takeDMG(const bool val);
+    void buff(const int val);
+    void heal(const int val);
+    void takeDMG(const int val);
 
     // GAME functions
     void action(player *p, bool owner, sf::Vector2f mouse_pos) override; //owner will be taken from turn_id

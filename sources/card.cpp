@@ -2,8 +2,8 @@
 
 card::card(const int cost, std::string texture):
                     cost(cost), selectFlag(false),
-                    card_sprite(ResourceManager::Instance().getTexture(texture)),
                     cost_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
+                    card_sprite(ResourceManager::Instance().getTexture(texture)),
                     flavor_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
 {
     // pow_txt.setFillColor(sf::Color::Black);
@@ -16,8 +16,9 @@ card::card(const int cost, std::string texture):
 
     card::card (const card &model):
             cost(model.cost), selectFlag(model.selectFlag),
+            cost_txt(model.cost_txt),
             card_sprite(model.card_sprite.getTexture()),
-            cost_txt(model.cost_txt), flavor_txt(model.flavor_txt) {
+            flavor_txt(model.flavor_txt) {
         // std::cout << "card copied";
 } // COPY constructor
 
