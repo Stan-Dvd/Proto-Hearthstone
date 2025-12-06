@@ -11,13 +11,6 @@ spell::spell(const int cost, std::string name, std::string description, std::str
 spell::spell(const spell &model) : card(model), name_txt(model.name_txt){};
 
 
-//TODO: remove
-void spell::action(player *p, bool owner, sf::Vector2f) {
-    if (1)
-        return;
-}
-
-
 void spell::setDetailscale(const float x, const float y) {
     name_txt.setScale({x, y});
 }
@@ -34,10 +27,6 @@ void spell::draw_details(sf::RenderWindow &window) {
 
 void spell::displayDetails() {
     std::cout << " Spell name: " << name_txt.getString().toAnsiString();
-}
-
-card *spell::clone() {
-    return new spell(*this);
 }
 
 

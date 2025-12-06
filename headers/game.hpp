@@ -16,7 +16,7 @@ private:
     card *selected_card;
     sf::Sprite Board, turn_button;
     sf::RectangleShape text_box;
-    sf::Text text;
+    sf::Text message;
     sf::RenderWindow window;
 
 public:

@@ -21,18 +21,21 @@ public:
     minion (const minion &model);// COPY constructor
     ~minion() override;
 
-    // GET/SETTERS
-
+    // GET
     int getPower();
     int getHealth();
     bool check_atkFlag();
     bool check_deployFlag();
+
+    //SETTERS / changers
     void set_atkFlag(const bool val);
     void set_deployFlag(const bool val);
+    void buff(const bool val);
+    void heal(const bool val);
+    void takeDMG(const bool val);
 
     // GAME functions
-    //TODO: reactivate
-    void action(player *p, bool owner, sf::Vector2f) override; //owner will be taken from turn_id
+    void action(player *p, bool owner, sf::Vector2f mouse_pos) override; //owner will be taken from turn_id
     void attack(minion *target);
 
     void draw_details(sf::RenderWindow &window) override;

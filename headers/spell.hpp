@@ -12,13 +12,13 @@ public:
              std::string texture = PLACEHOLDER_SPELL_TEXTURE);
     spell(const spell& model);
 
-    void action(player *p, bool owner, sf::Vector2f) override;
+    void action(player *p, bool owner, sf::Vector2f) override = 0;
 
     void setDetailscale(const float x, const float y) override;
     void draw_details(sf::RenderWindow &window) override;
     void displayDetails() override;
 
-    card* clone() override;
+    card* clone() override = 0;
 
 };
 

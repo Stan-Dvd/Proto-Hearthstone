@@ -44,7 +44,6 @@ int minion::getHealth() {
     return health;
 }
 
-
 bool minion::check_atkFlag() {
     return attackFlag;
 }
@@ -60,10 +59,22 @@ void minion::set_deployFlag(const bool val) {
     deployFlag = val;
 }
 
+void minion::buff(const bool val) {
+    power += val;
+}
+
+void minion::heal(const bool val) {
+    health += val;
+}
+
+void minion::takeDMG(const bool val) {
+    health -= val;
+}
+
 void minion::action(player *p, bool owner, sf::Vector2f mouse_pos) {
 
     //whatever happens, deselect card. otherwise gets way too complicated
-    set_selectFlag(false);
+    // set_selectFlag(false); this happens in game now
 
     if (deployFlag == false) {
         // minion is in hand. deploy minion?

@@ -68,12 +68,16 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         headers/player.hpp
         headers/game.hpp
         headers/constants.hpp
+        headers/cards_def.hpp
+        headers/exceptions.hpp
         sources/card.cpp
         sources/minion.cpp
         sources/spell.cpp
         sources/deck.cpp
         sources/player.cpp
         sources/game.cpp
+        sources/cards_def.cpp
+        sources/exceptions.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

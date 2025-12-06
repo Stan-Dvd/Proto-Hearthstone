@@ -5,6 +5,7 @@
 // #include "minion.hpp"
 // #include "deck.hpp"
 // #include "player.hpp"
+#include "cards_def.hpp"
 #include "game.hpp"
 #include "spell.hpp"
 
@@ -24,7 +25,7 @@
 int main() {
 
     card* card_pool[4] { new minion(3, 4, 2), new minion(2, 1, 4),
-                        new minion(1, 2, 1), new spell(1)};
+                        new minion(1, 2, 1), new fireball()};
     int const card_freq[4]{3, 3, 1, 2};
 
     game master;

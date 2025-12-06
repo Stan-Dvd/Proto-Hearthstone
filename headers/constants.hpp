@@ -21,4 +21,7 @@
 #define SLOT_WIDTH 180
 #define SLOT_HEIGHT 250
 
+//card specific:
+#define FIREBALL_DMG 2
+
 #endif //CONSTANTS_H

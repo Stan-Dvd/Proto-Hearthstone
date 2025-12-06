@@ -6,6 +6,7 @@
 #define CARD_HPP
 
 #include <iostream>
+#include <exception>
 #include <SFML/Graphics.hpp>
 #include "constants.hpp"
 #include "ResourceManager.hpp"
@@ -39,7 +40,7 @@ public:
 
     // GAME functions
 
-    virtual void action(player *p, bool owner, sf::Vector2f) = 0; //owner will be taken from turn_id
+    virtual void action(player *p, bool owner, sf::Vector2f mouse_pos) = 0; //owner will be taken from turn_id
     int is_playable(int mana);
 
     void draw(sf::RenderWindow &window, const float x, const float y);

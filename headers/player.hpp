@@ -14,7 +14,7 @@ private:
     bool active;
     float Hand_startPosX, Hand_startPosY, Board_startPosX, Board_startPosY;
     std::vector<card*> hand;
-    std::vector<minion*> board; //nuj daca are sens asta da vedem
+    std::vector<minion*> board;
     deck p_deck;
     sf::Text mana_text, hp_text;
     sf::Sprite mana_sprite, hp_sprite;
@@ -24,28 +24,32 @@ public:
 
     void deck_init( card* *card_pool, const int *card_freq, const int pool_size);
 
+    //GAME ACTIONS
     void playCard( const unsigned int poz ); //debug
     void deployMinion(minion* atk);
+    void remove_fromHand(const card* card);
     void drawFromDeck();
-    void takeDMG(int dmg);
+    void takeDMG(const int dmg);
+    void payCost(const int cost);
+    card* getMinion(const unsigned int poz);
+    card* getCard(const unsigned int poz);
+    void checkBoard();
+    void startTurn();
+    void endTurn();
+
     //TODO: obsolete
     // void atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz); //debug
     // void atkMinion(player &p2, card* atk, card* target);
     // void atkPlayer(player &p2, const unsigned int atk_poz); //debug
     // void atkPlayer(player &p2, card* atk);
 
-    card* getMinion(const unsigned int poz);
-    card* getCard(const unsigned int poz);
-
-    void checkBoard();
-    void startTurn();
-    void endTurn();
-
+    //MOUSE CHECKS
     card* selectHand(const sf::Vector2f mouse_pos);
     minion* selectBoard(const sf::Vector2f mouse_pos);
     card* selectCard(const sf::Vector2f mouse_pos);
     bool selectPlayer(const sf::Vector2f mouse_pos);
 
+    //SPRITE/DRAW stuff
     void setStartPos(const sf::RenderWindow &window);
     sf::FloatRect getBoardBounds() const;
     void drawHand(sf::RenderWindow &window);
@@ -53,6 +57,7 @@ public:
     void drawManaHp(sf::RenderWindow &window);
     void drawPlayer(sf::RenderWindow &window);
 
+    //debug print
     void display();
     // friend std::ostream& operator<< (std::ostream &os, const player &p1);
 };

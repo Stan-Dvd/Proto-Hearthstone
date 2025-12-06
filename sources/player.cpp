@@ -1,6 +1,8 @@
 
 #include "player.hpp"
 
+#include "exceptions.hpp"
+
 player::player(const int id) :
     maxMana(1), curMana(1), health(10), player_id(id), active(false),
     Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(),
@@ -59,18 +61,8 @@ void player::playCard( const unsigned int poz ) {
 }
 
 void player::deployMinion( minion* atk ) {
-    // if (!active) {
-    //     std::cout << "player inactive!\n";
-    //     return;
-    //     // va fi folosit pt butoane probabil
-    // }
-    // if (poz > hand.size()-1) {
-    //     // teoretic n-ar trb sa se intample la butoane
-    //     std::cout << "card beyond hand!\n";
-    //     return;
-    // }
     if (board.size() >= 7) {
-        //TODO: full exception
+        //TODO: overflow exception
         std::cout << "board is full\n";
         return;
     }
@@ -85,16 +77,20 @@ void player::deployMinion( minion* atk ) {
         curMana = curMana - atk->getCost(); // pay mana cost
 
         //DELETE card from hand (in a very scuffed way because pointers)
-        for (unsigned int i=0; i < hand.size(); ++i) {
-            if (hand[i] == atk) {
-                hand.erase(hand.begin() + i);
-                std::cout << "played card" << i << "from hand\n";
-            }
-        }
-        return;
+        remove_fromHand(atk);
     }
     std::cout << "not enough mana!\n";
 }
+
+void player::remove_fromHand(const card *card) {
+    for (unsigned int i=0; i < hand.size(); ++i) {
+        if (hand[i] == card) {
+            hand.erase(hand.begin() + i);
+            std::cout << "played card" << i << "from hand\n";
+        }
+    }
+}
+
 
 void player::drawFromDeck() {
     if (p_deck.getSize() == 0) {
@@ -112,6 +108,15 @@ void player::drawFromDeck() {
 void player::takeDMG(int dmg) {
     health -= dmg;
 }
+
+void player::payCost(const int cost) {
+    if (cost > curMana) {
+        throw noMana_exception(cost - curMana);
+        return;
+    }
+    curMana -= cost;
+}
+
 
 //void player::atkMinion(player &p2, const unsigned int atk_poz, const unsigned int targ_poz) {
 //    //TODO: remove - old, used before sfml

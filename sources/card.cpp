@@ -1,7 +1,5 @@
 #include "card.hpp"
 
-#include "minion.hpp"
-
 card::card(const int cost, std::string texture):
                     cost(cost), selectFlag(false),
                     card_sprite(ResourceManager::Instance().getTexture(texture)),
