@@ -4,6 +4,10 @@
 #include <algorithm>
 #include <random>
 
+#include "card_factory.hpp"
+
+CardFactory deck::factory;
+
 deck::deck() {
     cards.reserve(30);
 //    player_id = id;
@@ -18,12 +22,12 @@ deck::deck() {
 //     player_id = model.player_id;
 // }
 
-void deck::deck_init( card* *card_pool, const int *card_freq, const int pool_size) {
+void deck::deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size) {
     int i=0;
     for (i=0; i<pool_size; ++i) {
         int k=0;
         while (k < card_freq[i]) {
-            cards.push_back( card_pool[i]->clone() );
+            cards.push_back( factory.create_card(card_pool[i]) );
             k++;
         }
     }

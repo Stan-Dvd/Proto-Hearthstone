@@ -107,7 +107,7 @@ void minion::action(player *p, const bool owner, const sf::Vector2f mouse_pos) {
         std::cout << "player " << !owner << " attacked\n";
         return;
     }
-    throw ready_exception();
+    throw target_exception("Enemy minion \nor player");
 }
 
 

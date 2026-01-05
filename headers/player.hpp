@@ -8,6 +8,8 @@
 #include <deck.hpp>
 #include <minion.hpp>
 
+#include "card_factory.hpp"
+
 class player {
 private:
     int maxMana, curMana, health, player_id;
@@ -22,7 +24,7 @@ public:
     player(int id);
     ~player();
 
-    void deck_init( card* *card_pool, const int *card_freq, const int pool_size);
+    void deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size);
 
     //GAME ACTIONS
     void playCard( const unsigned int poz ); //debug

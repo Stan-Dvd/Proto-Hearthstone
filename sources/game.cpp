@@ -1,6 +1,7 @@
 
 #include "game.hpp"
 
+#include "card_factory.hpp"
 #include "exceptions.hpp"
 
 
@@ -41,8 +42,8 @@ game::game() :
     p[1].setStartPos(window);
 }
 
-void game::init(card* *card_pool1, const int *card_freq1, const int pool_size1,
-                card* *card_pool2, const int *card_freq2, const int pool_size2) {
+void game::init(CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
+                CardTypes *card_pool2, const int *card_freq2, const int pool_size2) {
     p[0].deck_init(card_pool1, card_freq1, pool_size1);
     p[1].deck_init(card_pool2, card_freq2, pool_size2);
     std::cout << "drawing first cards";
@@ -102,7 +103,7 @@ void game::handle_click(const auto mouse_pos) {
     else if (!select_flag) {
         selectCard(mouse_pos);
     }
-    else { // exista o carte selectata, vezi ce faci cu ea
+    else { // exista o carte selectata
         selected_card->set_selectFlag(false);
         select_flag = false;
         //indiferent, cartea va fi deselectata

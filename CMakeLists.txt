@@ -70,6 +70,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         headers/constants.hpp
         headers/cards_def.hpp
         headers/exceptions.hpp
+        headers/card_factory.hpp
         sources/card.cpp
         sources/minion.cpp
         sources/spell.cpp

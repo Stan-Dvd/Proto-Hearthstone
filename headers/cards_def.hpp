@@ -2,6 +2,7 @@
 #define CARDS_DEF_HPP
 
 #include "spell.hpp"
+#include "minion.hpp"
 
 class fireball : public spell {
 public:

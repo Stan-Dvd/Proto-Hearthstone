@@ -25,7 +25,7 @@ player::~player() {
     }
 };
 
-void player::deck_init( card* *card_pool, const int *card_freq, const int pool_size) {
+void player::deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size) {
     p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
     p_deck.shuffle();
 }

@@ -25,6 +25,7 @@ void fireball::action(player *p, const bool owner, const sf::Vector2f mouse_pos)
 }
 
 void pot_of_greed::action(player *p, const bool owner, const sf::Vector2f mouse_pos) {
+    // check if friendly board is clicked
     if (p[owner].getBoardBounds().contains(mouse_pos)) {
         p[owner].payCost(this->getCost());
         for (int i=0; i<3; i++)

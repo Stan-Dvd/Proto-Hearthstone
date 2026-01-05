@@ -4,10 +4,12 @@
 #include <vector>
 
 #include "card.hpp"
+#include "card_factory.hpp"
 
 class deck {
 private:
     std::vector<card*> cards;
+    static CardFactory factory;
     //    int player_id;
 
 public:
@@ -17,7 +19,7 @@ public:
 
     // deck(deck &model);
 
-    void deck_init( card* *card_pool, const int *card_freq, const int pool_size);
+    void deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size);
 
     ~deck();
 
