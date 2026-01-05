@@ -5,12 +5,6 @@
 #include "ResourceManager.hpp"
 #include <iostream>
 
-ResourceManager& ResourceManager::Instance()
-{
-    static ResourceManager instance;
-    return instance;
-}
-
 ResourceManager::ResourceManager()
 {
     loadTexture("images", "board_texture.png");

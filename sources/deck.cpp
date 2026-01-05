@@ -6,8 +6,6 @@
 
 #include "card_factory.hpp"
 
-CardFactory deck::factory;
-
 deck::deck() {
     cards.reserve(30);
 //    player_id = id;
@@ -27,7 +25,7 @@ void deck::deck_init(CardTypes * card_pool, const int *card_freq, const int pool
     for (i=0; i<pool_size; ++i) {
         int k=0;
         while (k < card_freq[i]) {
-            cards.push_back( factory.create_card(card_pool[i]) );
+            cards.push_back( CardFactory::Instance().create_card(card_pool[i]) );
             k++;
         }
     }

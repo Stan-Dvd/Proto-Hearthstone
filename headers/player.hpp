@@ -8,8 +8,6 @@
 #include <deck.hpp>
 #include <minion.hpp>
 
-#include "card_factory.hpp"
-
 class player {
 private:
     int maxMana, curMana, health, player_id;

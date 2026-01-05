@@ -5,12 +5,13 @@
 
 enum CardTypes { Minion1, Minion2, Minion3, Fireball, PotOfGreed, MendWounds };
 
-class CardFactory {
-public:
+class CardFactory :public Singleton<CardFactory> {
+    friend class Singleton<CardFactory>;
+private:
     CardFactory() = default;
     ~CardFactory() = default;
-
-    card* create_card(const CardTypes type) {
+public:
+    static card* create_card(const CardTypes type) {
         switch (type) {
             case CardTypes::Minion1:
                 return new minion(1, 2, 1);

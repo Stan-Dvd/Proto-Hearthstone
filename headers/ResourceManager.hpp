@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
+#include "singleton.hpp"
 
 /*
  *  Pentru ușurință clasa `ResourceManager` va fi un Singleton.
@@ -18,13 +19,9 @@
 ///
 ///////////////////////////////////////////
 
-class ResourceManager {
+class ResourceManager :public Singleton<ResourceManager> {
+    friend class Singleton<ResourceManager>; // pentru a putea apela constructorul
 public:
-    ResourceManager(const ResourceManager&) = delete;
-    ResourceManager& operator=(const ResourceManager&) = delete;
-
-    static ResourceManager& Instance();
-
     sf::Texture& getTexture(const std::string& texture_name);
     sf::Font& getFont(const std::string& font_name);
 private:

@@ -9,8 +9,6 @@
 class deck {
 private:
     std::vector<card*> cards;
-    static CardFactory factory;
-    //    int player_id;
 
 public:
 

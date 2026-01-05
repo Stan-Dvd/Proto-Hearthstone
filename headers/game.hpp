@@ -5,7 +5,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "card_factory.hpp"
 #include "minion.hpp"
 #include "player.hpp"
 
