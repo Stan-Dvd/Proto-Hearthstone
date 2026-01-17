@@ -3,9 +3,13 @@
 
 #include "exceptions.hpp"
 
+//TODO: make builders for hunter, warlock, mb palladin with spawning spell
+
+//TODO: update init, selectCard and display to include signature
+
 player::player(const int id) :
     maxMana(1), curMana(1), health(10), player_id(id), active(false),
-    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),  p_deck(),
+    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0), signature(nullptr),
     mana_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     hp_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
     mana_sprite(ResourceManager::Instance().getTexture("crystal.png")),
@@ -25,7 +29,8 @@ player::~player() {
     }
 };
 
-void player::deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size) {
+void player::init(CardTypes * card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
+    signature = CardFactory::Instance().create_card(sig);
     p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
     p_deck.shuffle();
 }
@@ -124,7 +129,7 @@ void player::payCost(const int cost) {
     curMana -= cost;
 }
 
-//TODO: obsolete I think
+//obsolete I think
 card* player::getMinion(const unsigned int poz) { // a minion is a card on the board
     if (poz > board.size()-1) {
         std::cout << "minion beyond board!\n";
@@ -198,11 +203,18 @@ minion* player::selectBoard(const sf::Vector2f mouse_pos) const{
 card* player::selectCard(const sf::Vector2f mouse_pos) const{
     //asta e kinda stupid
 
+    if (signature->getGlobalBounds().contains(mouse_pos)) {
+        return signature;
+    }
+
     card* select;
-    select = selectHand(mouse_pos);
-    if ( select != nullptr ) {
+    if ( (select = selectHand(mouse_pos)) != nullptr ) {
         return select;
     }
+    if ( (select = selectHand(mouse_pos)) != nullptr ) {
+        return select;
+    }
+
     return selectBoard(mouse_pos);
 }
 
@@ -313,6 +325,22 @@ void player::drawBoard(sf::RenderWindow &window) {
     }
 }
 
+void player::drawSig(sf::RenderWindow &window) {
+    sf::Vector2u size = window.getSize();
+
+    float offset = signature->check_selectFlag()?SELECT_OFFSET:0;
+
+    if (player_id == 1) {
+        signature->draw(window, static_cast<float>(size.x) * 0.03f,
+                      static_cast<float>(size.y) * 0.5f + offset);
+    }
+    else {
+        signature->draw(window, static_cast<float>(size.x) * 0.9f,
+                      static_cast<float>(size.y) * 0.3f + offset);
+    }
+}
+
+
 void player::drawManaHp(sf::RenderWindow &window) {
     std::ostringstream buf;
     buf << curMana << "/" << maxMana;
@@ -328,6 +356,7 @@ void player::drawPlayer(sf::RenderWindow &window) {
     this->drawBoard(window);
     this->drawHand(window);
     this->drawManaHp(window);
+    this->drawSig(window);
 }
 
 void player::display() {

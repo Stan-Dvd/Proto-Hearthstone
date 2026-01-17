@@ -13,6 +13,7 @@ private:
     int maxMana, curMana, health, player_id;
     bool active;
     float Hand_startPosX, Hand_startPosY, Board_startPosX, Board_startPosY;
+    card* signature;
     std::vector<card*> hand;
     std::vector<minion*> board;
     deck p_deck;
@@ -22,7 +23,10 @@ public:
     player(int id);
     ~player();
 
-    void deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size);
+    void init(CardTypes * card_pool,
+                const int *card_freq,
+                const int pool_size,
+                const CardTypes sig);
 
     //GAME ACTIONS
     void playCard( const unsigned int poz ); //debug
@@ -50,6 +54,7 @@ public:
     sf::FloatRect getBoardBounds() const;
     void drawHand(sf::RenderWindow &window);
     void drawBoard(sf::RenderWindow &window);
+    void drawSig(sf::RenderWindow &window);
     void drawManaHp(sf::RenderWindow &window);
     void drawPlayer(sf::RenderWindow &window);
 

@@ -24,5 +24,7 @@
 //card specific:
 #define FIREBALL_DMG 2
 #define MEND_WOUNDS_HEAL 3
+#define HUNTERS_GIFT_BUFF 1
+#define ELDRITCH_BLAST_DMG 3
 
 #endif //CONSTANTS_H

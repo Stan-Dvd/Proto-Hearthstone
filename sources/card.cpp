@@ -62,10 +62,12 @@ void card::draw(sf::RenderWindow &window, const float x, const float y) {
     card_sprite.setPosition({x, y});
     sf::FloatRect bounds = card_sprite.getGlobalBounds();
 
+    //set cost text position
     float new_x = bounds.position.x + bounds.size.x * 0.08f;
     float new_y = bounds.position.y + bounds.size.y * 0.01f;
     cost_txt.setPosition({new_x, new_y});
 
+    //set flavor text position
     new_x = bounds.position.x + bounds.size.x * 0.18f;
     new_y = bounds.position.y + bounds.size.y * 0.7f;
     flavor_txt.setPosition({new_x, new_y});

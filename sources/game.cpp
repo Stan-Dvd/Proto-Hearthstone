@@ -44,8 +44,8 @@ game::game() :
 
 void game::init(CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
                 CardTypes *card_pool2, const int *card_freq2, const int pool_size2) {
-    p[0].deck_init(card_pool1, card_freq1, pool_size1);
-    p[1].deck_init(card_pool2, card_freq2, pool_size2);
+    p[0].init(card_pool1, card_freq1, pool_size1, Hunters_Gift);
+    p[1].init(card_pool2, card_freq2, pool_size2, Eldritch_Blast);
     std::cout << "drawing first cards";
     for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
         p[0].drawFromDeck();

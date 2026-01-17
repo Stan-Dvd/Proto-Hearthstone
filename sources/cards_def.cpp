@@ -57,3 +57,36 @@ void mend_wounds::action(player *p, bool owner, sf::Vector2f mouse_pos) {
     throw target_exception("friendly");
 }
 
+void hunters_gift::action(player *p, bool owner, sf::Vector2f mouse_pos) {
+    //check if minion is target
+    minion* target = p[owner].selectBoard(mouse_pos);
+    if ( target != nullptr ) {
+        p[owner].payCost(this->getCost()); //can throw mana exception
+
+        target->buff(HUNTERS_GIFT_BUFF);
+        // p[owner].remove_fromHand(this);
+        return;
+    }
+    throw target_exception("friendly minion");
+}
+
+void eldritch_blast::action(player *p, bool owner, sf::Vector2f mouse_pos) {
+    //check if player is target
+    if (p[!owner].selectPlayer(mouse_pos)) {
+        p[owner].payCost(this->getCost()); //can throw mana exception
+
+        p[!owner].takeDMG(ELDRITCH_BLAST_DMG);
+        return;
+    }
+    //check if minion is target
+    minion* target = p[!owner].selectBoard(mouse_pos);
+    if ( target != nullptr ) {
+        p[owner].payCost(this->getCost()); //can throw mana exception
+
+        target->takeDMG(ELDRITCH_BLAST_DMG);
+        p[!owner].checkBoard();
+        return;
+    }
+    throw target_exception("enemy");
+}
+

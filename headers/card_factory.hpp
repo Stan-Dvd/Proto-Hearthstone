@@ -3,7 +3,9 @@
 
 #include "cards_def.hpp"
 
-enum CardTypes { Minion1, Minion2, Minion3, Fireball, PotOfGreed, MendWounds };
+enum CardTypes { Minion1, Minion2, Minion3,
+                Fireball, PotOfGreed, MendWounds,
+                Hunters_Gift, Eldritch_Blast};
 
 class CardFactory :public Singleton<CardFactory> {
     friend class Singleton<CardFactory>;
@@ -25,6 +27,10 @@ public:
                 return new mend_wounds();
             case CardTypes::PotOfGreed:
                 return new pot_of_greed();
+            case CardTypes::Hunters_Gift:
+                return new hunters_gift();
+            case CardTypes::Eldritch_Blast:
+                return new eldritch_blast();
             default:
                 return nullptr;
         }
