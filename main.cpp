@@ -14,10 +14,10 @@ int main() {
 
     // card* card_pool[6] { new minion(3, 4, 2), new minion(2, 1, 4),
     //                     new minion(1, 2, 1), new fireball(), new pot_of_greed(), new mend_wounds()};
-    CardTypes card_pool[6] {CardTypes::Minion3, CardTypes::Minion2, CardTypes::Minion1,
+    const CardTypes card_pool[6] {CardTypes::Minion3, CardTypes::Minion2, CardTypes::Minion1,
                             CardTypes::Fireball, CardTypes::PotOfGreed, CardTypes::MendWounds};
 
-    int const card_freq[6]{3, 3, 3, 2, 2, 2};
+    const int card_freq[6]{3, 3, 3, 2, 2, 2};
 
     game master;
     master.init(card_pool, card_freq, 6, card_pool, card_freq, 6);
