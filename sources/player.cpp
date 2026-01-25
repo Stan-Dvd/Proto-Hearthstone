@@ -33,7 +33,7 @@ player::~player() {
     }
 };
 
-void player::init(CardTypes * card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
+void player::init(const CardTypes * card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
     signature = CardFactory::Instance().create_card(sig);
     p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
     p_deck.shuffle();

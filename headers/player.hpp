@@ -23,7 +23,7 @@ public:
     explicit player(int id);
     ~player();
 
-    void init(CardTypes * card_pool,
+    void init(const CardTypes * card_pool,
                 const int *card_freq,
                 const int pool_size,
                 const CardTypes sig);
