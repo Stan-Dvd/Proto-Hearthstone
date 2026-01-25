@@ -21,8 +21,8 @@ private:
 
 public:
     game();
-    void init(CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
-                CardTypes *card_pool2, const int *card_freq2, const int pool_size2);
+    void init(const CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
+                const CardTypes *card_pool2, const int *card_freq2, const int pool_size2);
     void display();
     void switchTurn();
     void selectCard(const auto mouse_pos);
