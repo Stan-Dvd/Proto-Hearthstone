@@ -20,7 +20,7 @@ private:
     sf::Text mana_text, hp_text;
     sf::Sprite mana_sprite, hp_sprite;
 public:
-    player(int id);
+    explicit player(int id);
     ~player();
 
     void init(CardTypes * card_pool,

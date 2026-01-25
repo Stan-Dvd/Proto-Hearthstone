@@ -8,7 +8,7 @@ class GameMessage : public std::exception {
 private:
     std::string text;
 public:
-    GameMessage(const std::string &text) { this->text = text; }
+    explicit GameMessage(const std::string &text) { this->text = text; }
     ~GameMessage() = default;
     const char* what() const noexcept override { return text.c_str(); }
 };
@@ -21,28 +21,28 @@ public:
 
 class mana_exception : public GameMessage {
 public:
-    mana_exception(const int dif)
+    explicit mana_exception(const int dif)
         :GameMessage("Not enough mana! \nNeed " + std::to_string(dif) + " more!"){};
 };
 
 class target_exception : public GameMessage {
 public:
-    target_exception(const std::string &target)
+    explicit target_exception(const std::string &target)
         :GameMessage("Select " + target + "!"){};
 };
 
 class overflow_exception : public GameMessage { //hand/board full
 public:
-    overflow_exception(const std::string &object):
+    explicit overflow_exception(const std::string &object):
         GameMessage(object + " full!"){};
 };
 
 class empty_exception : public GameMessage {//deck empty dar hai sa fie general ig?
 public:
-    empty_exception(const std::string &object = "Deck")
+    explicit empty_exception(const std::string &object = "Deck")
         :GameMessage(object + " empty!"){};
 };
 
 
 
-#endif EXCEPTIONS_HPP
+#endif //EXCEPTIONS_HPP

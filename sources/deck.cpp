@@ -20,7 +20,7 @@ deck::deck() {
 //     player_id = model.player_id;
 // }
 
-void deck::deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size) {
+void deck::deck_init(const CardTypes * card_pool, const int *card_freq, const int pool_size) {
     int i=0;
     for (i=0; i<pool_size; ++i) {
         int k=0;
@@ -42,9 +42,9 @@ unsigned int deck::getSize() {
     return cards.size();
 }
 
-void deck::setCard(const int poz, card* card) {
-    cards[poz] = card->clone();
-}
+// void deck::setCard(const int poz, card* card) {
+//     cards[poz] = card->clone();
+// }
 
 //void deck::setStartPos(sf::RenderWindow& window) {
 //    const sf::Vector2u size = window.getSize();

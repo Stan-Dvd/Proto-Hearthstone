@@ -17,13 +17,13 @@ public:
 
     // deck(deck &model);
 
-    void deck_init(CardTypes * card_pool, const int *card_freq, const int pool_size);
+    void deck_init(const CardTypes * card_pool, const int *card_freq, const int pool_size);
 
     ~deck();
 
     //GET/SETTERS
     unsigned int getSize();
-    void setCard(const int poz, card* card);
+    // void setCard(const int poz, card* card);
     // void setStartPos(sf::RenderWindow& window);
 
     card* getCard();

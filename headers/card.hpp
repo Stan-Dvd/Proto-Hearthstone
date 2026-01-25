@@ -44,7 +44,7 @@ public:
     virtual void action(player *p, bool owner, sf::Vector2f mouse_pos) = 0; //owner will be taken from turn_id
     int is_playable(int mana);
 
-    void draw(sf::RenderWindow &window, const float x, const float y);
+    void draw(sf::RenderWindow &window, float x, float y);
     virtual void draw_details(sf::RenderWindow& window) = 0;
 
     void setScale(const float x, const float y);

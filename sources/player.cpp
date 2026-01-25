@@ -73,7 +73,6 @@ void player::deployMinion( minion* atk ) {
     if (board.size() >= 7) {
         std::cout << "board is full\n";
         throw overflow_exception("Board");
-        return;
     }
     if (atk->is_playable(curMana)) { // check if player has enough mana
         atk->set_selectFlag(false);
@@ -107,12 +106,10 @@ void player::drawFromDeck() {
     if (p_deck.getSize() == 0) {
         std::cout << "deck empty!\n";
         throw empty_exception("Deck");
-        return;
     }
     if (hand.size() >= 10) {
         p_deck.getCard(); // "destroy" card you would have drawn
         throw overflow_exception("Hand");
-        return;
     }
     hand.push_back(p_deck.getCard() );
 }
@@ -128,7 +125,6 @@ void player::heal(const int val) {
 void player::payCost(const int cost) {
     if (cost > curMana) {
         throw mana_exception(cost - curMana);
-        return;
     }
     curMana -= cost;
 }
@@ -143,12 +139,12 @@ card* player::getMinion(const unsigned int poz) { // a minion is a card on the b
     return board[poz];
 }
 
-card *player::getCard(const unsigned int poz) const{
-    if (poz > hand.size()) {
-        std::cout << "nu nu";
-    }
-    return hand[poz];
-}
+// card *player::getCard(const unsigned int poz) const{
+//     if (poz > hand.size()) {
+//         std::cout << "nu nu";
+//     }
+//     return hand[poz];
+// }
 
 unsigned int player::getBoardSize() const{
     return board.size();
