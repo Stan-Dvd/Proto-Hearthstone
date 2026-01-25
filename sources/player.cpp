@@ -4,6 +4,10 @@
 #include "exceptions.hpp"
 
 //TODO: make builders for hunter, warlock, mb palladin with spawning spell
+/* Builder notes:
+ * facem un builder cu setCardPool care face card_pool, card_freq si pool_size
+ * plus player_init
+ */
 
 //TODO: update init, selectCard and display to include signature
 
