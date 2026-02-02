@@ -12,17 +12,13 @@
 
 int main() {
 
-    // card* card_pool[6] { new minion(3, 4, 2), new minion(2, 1, 4),
-    //                     new minion(1, 2, 1), new fireball(), new pot_of_greed(), new mend_wounds()};
-    const CardTypes card_pool[6] {CardTypes::Minion3, CardTypes::Minion2, CardTypes::Minion1,
-                            CardTypes::Fireball, CardTypes::PotOfGreed, CardTypes::MendWounds};
+    playerBuilder *p1Builder, *p2Builder;
 
-    const int card_freq[6]{3, 3, 3, 2, 2, 2};
+    p1Builder = new hunterBuilder(1);
+    p2Builder = new warlockBuilder(2);
 
-    game master;
-    master.init(card_pool, card_freq, 6, card_pool, card_freq, 6);
-    // master.demo();
-    master.run();
+    game::Instance().init(p1Builder, p2Builder);
+    game::Instance().run();
 
     return 0;
 }

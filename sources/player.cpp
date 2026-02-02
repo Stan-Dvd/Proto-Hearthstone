@@ -33,8 +33,18 @@ player::~player() {
     }
 };
 
+//TODO: move to builder
 void player::init(const CardTypes * card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
     signature = CardFactory::Instance().create_card(sig);
+    p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
+    p_deck.shuffle();
+}
+
+void player::setSignature(CardTypes sig) {
+    signature = CardFactory::Instance().create_card(sig);
+}
+
+void player::setDeck(const CardTypes *card_pool, const int *card_freq, const int pool_size) {
     p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
     p_deck.shuffle();
 }
@@ -114,7 +124,7 @@ void player::drawFromDeck() {
     hand.push_back(p_deck.getCard() );
 }
 
-void player::takeDMG(int dmg) {
+void player::takeDMG(const int dmg) {
     health -= dmg;
 }
 
@@ -129,16 +139,15 @@ void player::payCost(const int cost) {
     curMana -= cost;
 }
 
-//obsolete I think
-card* player::getMinion(const unsigned int poz) { // a minion is a card on the board
-    if (poz > board.size()-1) {
-        std::cout << "minion beyond board!\n";
-        // return card(0, 0, 0);
-        // ce returnez aici even?
-    }
-    return board[poz];
-}
-
+//obsolete in GUI
+// card* player::getMinion(const unsigned int poz) { // a minion is a card on the board
+//     if (poz > board.size()-1) {
+//         std::cout << "minion beyond board!\n";
+//         // return card(0, 0, 0);
+//         // ce returnez aici even?
+//     }
+//     return board[poz];
+// }
 // card *player::getCard(const unsigned int poz) const{
 //     if (poz > hand.size()) {
 //         std::cout << "nu nu";
@@ -178,6 +187,8 @@ void player::endTurn() {
         //reset all minions on board
     }
 }
+
+// ====SELECT====
 
 card* player::selectHand(const sf::Vector2f mouse_pos) const{
     //search hand
@@ -237,6 +248,7 @@ sf::FloatRect player::getBoardBounds() const {
     return bounds;
 }
 
+// ====DRAW====
 
 void player::setStartPos(const sf::RenderWindow &window) {
     //set positions for displaying hand, board, mana, hp
@@ -284,55 +296,48 @@ void player::setStartPos(const sf::RenderWindow &window) {
     }
 }
 
-void player::drawHand(sf::RenderWindow &window) {
+void player::drawHand(sf::RenderWindow &window) const {
     //naspa pt ca if-uri da nuj cum altucmva sa fac
-
+    float offset;
     if (player_id == 1) {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            if (hand[i]->check_selectFlag())
-                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - SELECT_OFFSET);
-            else
-                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
+                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - offset);
         }
     }
     else {
         for (unsigned int i=0; i < hand.size(); ++i) {
-            if (hand[i]->check_selectFlag())
-                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + SELECT_OFFSET);
-            else
-                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY);
+            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
+                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + offset);
         }
     }
 }
 
-void player::drawBoard(sf::RenderWindow &window) {
+void player::drawBoard(sf::RenderWindow &window) const {
+    float offset;
     if (player_id == 1) {
         for (unsigned int i=0; i < board.size(); ++i) {
-            if (board[i]->check_selectFlag())
-                board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - SELECT_OFFSET/1.6);
-            else
-            board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
+            offset = board[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
+            board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - offset);
         }
     }
     else {
         for (unsigned int i=0; i < board.size(); ++i) {
-            if (board[i]->check_selectFlag())
-                board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + SELECT_OFFSET/1.6);
-            else
-                board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY);
-
+            offset = board[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
+            board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + offset);
         }
     }
 }
 
-void player::drawSig(sf::RenderWindow &window) {
+void player::drawSig(sf::RenderWindow &window) const {
     sf::Vector2u size = window.getSize();
 
-    float offset = signature->check_selectFlag()?SELECT_OFFSET:0;
+    //if select flag is 0, set 0 (no drawing offset)
+    float offset = signature->check_selectFlag() ? SELECT_OFFSET : 0;
 
     if (player_id == 1) {
         signature->draw(window, static_cast<float>(size.x) * 0.03f,
-                      static_cast<float>(size.y) * 0.5f + offset);
+                      static_cast<float>(size.y) * 0.5f - offset);
     }
     else {
         signature->draw(window, static_cast<float>(size.x) * 0.9f,

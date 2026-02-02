@@ -14,15 +14,13 @@ public:
 
     // CONSTRUCTORS
     deck();
-
+    ~deck();
     // deck(deck &model);
 
-    void deck_init(const CardTypes * card_pool, const int *card_freq, const int pool_size);
-
-    ~deck();
 
     //GET/SETTERS
     unsigned int getSize();
+    void deck_init(const CardTypes * card_pool, const int *card_freq, const int pool_size);
     // void setCard(const int poz, card* card);
     // void setStartPos(sf::RenderWindow& window);
 
@@ -30,7 +28,6 @@ public:
     void shuffle();
 
     // void drawDeck(sf::RenderWindow& window);
-
 //    friend std::ostream& operator<< (std::ostream &os, const deck &deck);
     void display() const;
 };

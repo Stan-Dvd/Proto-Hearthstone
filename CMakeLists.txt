@@ -72,6 +72,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         headers/exceptions.hpp
         headers/card_factory.hpp
         headers/singleton.hpp
+        headers/playerBuilder.hpp
         sources/card.cpp
         sources/minion.cpp
         sources/spell.cpp

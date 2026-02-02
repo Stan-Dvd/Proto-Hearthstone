@@ -1,6 +1,5 @@
 
 #include "game.hpp"
-
 #include "card_factory.hpp"
 #include "exceptions.hpp"
 
@@ -28,24 +27,28 @@ game::game() :
     turn_button.setPosition({static_cast<float>(window_size.x) * 0.76f,
                         static_cast<float>(window_size.y) * 0.43f});
     turn_button.setScale({0.7f, 0.7f});
+
     //setup text box
     text_box.setPosition({ static_cast<float>(window_size.x) * 0.02f,
                             static_cast<float>(window_size.y) * 0.3f});
     text_box.setFillColor(sf::Color::Black);
+
     //setup text
     message.setPosition({static_cast<float>(window_size.x) * 0.03f,
                         static_cast<float>(window_size.y) * 0.31f});
     message.setCharacterSize(TEXTBOX_FONT);
     message.setString("Current turn: P1");
+}
+
+void game::init(playerBuilder* p1Builder, playerBuilder* p2Builder) {
+    p1Builder->buildPlayer();
+    p2Builder->buildPlayer();
+    p[0] = *p1Builder->getPlayer();
+    p[1] = *p2Builder->getPlayer();
 
     p[0].setStartPos(window);
     p[1].setStartPos(window);
-}
 
-void game::init(const CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
-                const CardTypes *card_pool2, const int *card_freq2, const int pool_size2) {
-    p[0].init(card_pool1, card_freq1, pool_size1, Hunters_Gift);
-    p[1].init(card_pool2, card_freq2, pool_size2, Eldritch_Blast);
     std::cout << "drawing first cards";
     for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
         p[0].drawFromDeck();
@@ -54,6 +57,19 @@ void game::init(const CardTypes *card_pool1, const int *card_freq1, const int po
     p[1].drawFromDeck();
     p[0].startTurn();
 }
+
+// void game::init(const playerBuilder* p1Builder, const playerBuilder* p2Builder
+// ) {
+//     p[0].init(card_pool1, card_freq1, pool_size1, Hunters_Gift);
+//     p[1].init(card_pool2, card_freq2, pool_size2, Eldritch_Blast);
+//     std::cout << "drawing first cards";
+//     for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
+//         p[0].drawFromDeck();
+//         p[1].drawFromDeck();
+//     }
+//     p[1].drawFromDeck();
+//     p[0].startTurn();
+// }
 
 void game::display() {
     window.clear();

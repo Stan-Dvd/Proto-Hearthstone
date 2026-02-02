@@ -6,9 +6,11 @@
 #define GAME_HPP
 
 #include "minion.hpp"
+#include "playerBuilder.hpp"
 #include "player.hpp"
 
-class game{
+class game : public Singleton<game>{
+    friend class Singleton<game>;
 private:
     player p[2];
     bool turn_id; // traks whose turn it is
@@ -19,10 +21,9 @@ private:
     sf::Text message;
     sf::RenderWindow window;
 
-public:
     game();
-    void init(const CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
-                const CardTypes *card_pool2, const int *card_freq2, const int pool_size2);
+public:
+    void init(playerBuilder* p1Builder, playerBuilder* p2Builder);
     void display();
     void switchTurn();
     void selectCard(const auto mouse_pos);
