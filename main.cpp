@@ -13,12 +13,14 @@
 int main() {
 
     playerBuilder *p1Builder, *p2Builder;
-
     p1Builder = new hunterBuilder(1);
     p2Builder = new warlockBuilder(2);
 
     game::Instance().init(p1Builder, p2Builder);
     game::Instance().run();
+
+    delete p1Builder;
+    delete p2Builder;
 
     return 0;
 }

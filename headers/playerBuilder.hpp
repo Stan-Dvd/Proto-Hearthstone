@@ -10,7 +10,10 @@ protected:
     virtual void buildSignature() = 0;
     virtual void buildDeck() = 0;
 public:
-    playerBuilder(const int id) : p(new player(id)){}
+    explicit playerBuilder(const int id) : p(new player(id)){}
+    explicit playerBuilder(const playerBuilder& pb) {
+        p = new player(*pb.getPlayer());
+    }
     virtual ~playerBuilder() {
         delete p;
     }
@@ -36,7 +39,7 @@ private:
     }
 
 public:
-    warlockBuilder(const int id) : playerBuilder(id) {}
+    explicit warlockBuilder(const int id) : playerBuilder(id) {}
     void buildPlayer() override {
         buildSignature();
         buildDeck();
@@ -57,7 +60,7 @@ private:
     }
 
 public:
-    hunterBuilder(const int id) : playerBuilder(id) {}
+    explicit hunterBuilder(const int id) : playerBuilder(id) {}
     void buildPlayer() override {
         buildSignature();
         buildDeck();
