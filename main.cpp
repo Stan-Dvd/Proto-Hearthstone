@@ -12,8 +12,8 @@
 
 int main() {
      playerBuilder *p1Builder, *p2Builder;
-     p1Builder = new hunterBuilder(1);
-     p2Builder = new warlockBuilder(2);
+     p1Builder = new hunterBuilder();
+     p2Builder = new warlockBuilder();
     //builders handle player setup, depending on class
 
     game::Instance().init(p1Builder, p2Builder);

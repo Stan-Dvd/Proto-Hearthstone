@@ -15,18 +15,20 @@ protected:
     virtual void buildDeck() = 0;
 
 public:
-    explicit playerBuilder(const int id) : p(new player(id)) {}
+    explicit playerBuilder() : p(nullptr) {}
     explicit playerBuilder(const playerBuilder &pb) = delete;
     playerBuilder *operator=(const playerBuilder &pb) = delete;
+    virtual ~playerBuilder() = default;
 
-    virtual ~playerBuilder() {
-        std::cout << "builder: ";
-        delete p;
+    virtual void buildPlayer(const int id) = 0;
+    void reset() {
+        p = nullptr;
     }
-    virtual void buildPlayer() = 0;
-
-    player *getPlayer() const {
-        return p;
+    [[nodiscard]] player *getPlayer() {
+        //once passed to the caller, the pointer in builder is set to null
+        player *result = p;
+        reset();
+        return result;
     }
 };
 
@@ -47,8 +49,8 @@ private:
     }
 
 public:
-    explicit warlockBuilder(const int id) : playerBuilder(id) {}
-    void buildPlayer() override {
+    void buildPlayer(const int id) override {
+        p = new player(id);
         buildSignature();
         buildDeck();
     }
@@ -70,8 +72,8 @@ private:
     }
 
 public:
-    explicit hunterBuilder(const int id) : playerBuilder(id) {}
-    void buildPlayer() override {
+    void buildPlayer(const int id) override {
+        p = new player(id);
         buildSignature();
         buildDeck();
     }

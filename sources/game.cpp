@@ -49,12 +49,14 @@ game::~game() {
     if (selected_card != nullptr) {
         delete selected_card;
     }
+    delete p[0];
+    delete p[1];
 }
 
 
 void game::init(playerBuilder *p1Builder, playerBuilder *p2Builder) {
-    p1Builder->buildPlayer();
-    p2Builder->buildPlayer();
+    p1Builder->buildPlayer(1);
+    p2Builder->buildPlayer(2);
     p[0] = p1Builder->getPlayer();
     p[1] = p2Builder->getPlayer();
 
