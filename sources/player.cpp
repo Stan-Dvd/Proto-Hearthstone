@@ -42,13 +42,6 @@ player::~player() {
     std::cout <<"player deleted" <<player_id << "\n";
 };
 
-//TODO: move to builder
-void player::init(const CardTypes *card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
-    signature = CardFactory::Instance().create_card(sig);
-    p_deck.deck_init(card_pool, card_freq, pool_size); // nu imi place asta
-    p_deck.shuffle();
-}
-
 void player::setSignature(CardTypes sig) {
     signature = CardFactory::Instance().create_card(sig);
 }
