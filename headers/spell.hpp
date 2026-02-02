@@ -9,17 +9,16 @@ private:
 
 public:
     spell(const int cost, std::string name = "Placeholder", std::string description = "Placeholder",
-             std::string texture = PLACEHOLDER_SPELL_TEXTURE);
-    spell(const spell& model);
+          std::string texture = PLACEHOLDER_SPELL_TEXTURE);
+    spell(const spell &model);
 
-    void action(player *p, bool owner, sf::Vector2f mouse_pos) override = 0;
+    void action(player **p, bool owner, sf::Vector2f mouse_pos) override = 0;
 
     void setDetailscale(const float x, const float y) override;
     void draw_details(sf::RenderWindow &window) override;
     void displayDetails() override;
 
-    card* clone() override = 0;
-
+    card *clone() override = 0;
 };
 
 #endif //SPELL_HPP

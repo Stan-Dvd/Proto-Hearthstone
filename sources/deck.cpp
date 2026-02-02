@@ -1,4 +1,3 @@
-
 #include "deck.hpp"
 
 #include <algorithm>
@@ -8,7 +7,7 @@
 
 deck::deck() {
     cards.reserve(30);
-//    player_id = id;
+    //    player_id = id;
 }
 
 // deck::deck(deck &model) {
@@ -20,19 +19,27 @@ deck::deck() {
 //     player_id = model.player_id;
 // }
 
-void deck::deck_init(const CardTypes * card_pool, const int *card_freq, const int pool_size) {
-    int i=0;
-    for (i=0; i<pool_size; ++i) {
-        int k=0;
+void deck::deck_init(const CardTypes *card_pool, const int *card_freq, const int pool_size) {
+    int i = 0;
+    for (i = 0; i < pool_size; ++i) {
+        int k = 0;
         while (k < card_freq[i]) {
-            cards.push_back( CardFactory::Instance().create_card(card_pool[i]) );
+            cards.push_back(CardFactory::Instance().create_card(card_pool[i]));
             k++;
         }
     }
 }
 
+//better if we just delete
+// deck deck::operator=(const deck &model) {
+//     for (unsigned int i = 0; i < model.cards.size(); ++i)
+//         cards[i] = model.cards[i]->clone();
+//     return *this;
+// }
+
+
 deck::~deck() {
-    for (unsigned int i=0; i<cards.size(); ++i)
+    for (unsigned int i = 0; i < cards.size(); ++i)
         delete cards[i];
     cards.clear();
 }
@@ -58,16 +65,16 @@ unsigned int deck::getSize() {
 //    }
 //}
 
-card* deck::getCard() {
+card *deck::getCard() {
     //draw card from deck
-    card* x = cards[cards.size() - 1]->clone();
+    card *x = cards[cards.size() - 1]->clone();
     cards.pop_back();
     return x;
 }
 
 void deck::shuffle() {
     auto rd = std::random_device{};
-    auto rng = std::default_random_engine { rd() };
+    auto rng = std::default_random_engine{rd()};
     std::ranges::shuffle(cards, rng);
 }
 
@@ -84,9 +91,9 @@ void deck::shuffle() {
 //    }
 //}
 
-void deck::display() const{
+void deck::display() const {
     std::cout << cards.size() << " cards in deck \n";
-    for (unsigned int i=0; i<cards.size(); ++i) {
+    for (unsigned int i = 0; i < cards.size(); ++i) {
         cards[i]->display();
         std::cout << " || ";
     }

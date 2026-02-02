@@ -7,7 +7,7 @@
 class player;
 //why does this work what kind of forbidden black magic is this
 
-class minion : public card{
+class minion : public card {
 private:
     int power, health;
     bool attackFlag; // tracks if card has attacked this turn
@@ -15,10 +15,9 @@ private:
     sf::Text hp_txt, pow_txt;
 
 public:
-
     // CONSTRUCTORS
     minion(int cost, int pow, int hp, std::string texture = PLACEHOLDER_MINION_TEXTURE);
-    minion (const minion &model);// COPY constructor
+    minion(const minion &model); // COPY constructor
     ~minion() override;
 
     // GET
@@ -35,7 +34,7 @@ public:
     void takeDMG(const int val);
 
     // GAME functions
-    void action(player *p, bool owner, sf::Vector2f mouse_pos) override; //owner will be taken from turn_id
+    void action(player **p, bool owner, sf::Vector2f mouse_pos) override; //owner will be taken from turn_id
     void attack(minion *target);
 
     void draw_details(sf::RenderWindow &window) override;
@@ -45,7 +44,7 @@ public:
     // friend std::ostream& operator<< (std::ostream &os, const card &card);
     void displayDetails() override;
 
-    card* clone() override;
+    card *clone() override;
 };
 
 #endif //MINION_HPP

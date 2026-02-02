@@ -3,25 +3,29 @@
 
 #include "player.hpp"
 
+//builders set the cards from the players deck and the signature spell
+//depending on the player class
+
 class playerBuilder {
 protected:
-  player * p;
+    player *p;
+
 protected:
     virtual void buildSignature() = 0;
     virtual void buildDeck() = 0;
+
 public:
-    explicit playerBuilder(const int id) : p(new player(id)){}
-    explicit playerBuilder(const playerBuilder& pb) {
-        p = new player(*pb.getPlayer());
-    }
-    playerBuilder* operator=(const playerBuilder &pb) = delete;
+    explicit playerBuilder(const int id) : p(new player(id)) {}
+    explicit playerBuilder(const playerBuilder &pb) = delete;
+    playerBuilder *operator=(const playerBuilder &pb) = delete;
 
     virtual ~playerBuilder() {
+        std::cout << "builder: ";
         delete p;
     }
     virtual void buildPlayer() = 0;
 
-    player * getPlayer() const{
+    player *getPlayer() const {
         return p;
     }
 };
@@ -34,8 +38,10 @@ private:
     void buildDeck() override {
         //doesn't have mend_wounds, has more fireball
         //has fewer small minions, for low-cost he has spells
-        const CardTypes card_pool[5] {Minion3, Minion2, Minion1,
-                                    Fireball, PotOfGreed};
+        const CardTypes card_pool[5]{
+            Minion3, Minion2, Minion1,
+            Fireball, PotOfGreed
+        };
         const int card_freq[5]{5, 3, 3, 3, 2};
         p->setDeck(card_pool, card_freq, 5);
     }
@@ -55,8 +61,10 @@ private:
     }
     void buildDeck() override {
         //doesn't have fireball, has more potOfGreed and small minions he can buff
-        const CardTypes card_pool[5] {Minion3, Minion2, Minion1,
-                                        PotOfGreed, MendWounds};
+        const CardTypes card_pool[5]{
+            Minion3, Minion2, Minion1,
+            PotOfGreed, MendWounds
+        };
         const int card_freq[5]{3, 4, 4, 3, 3};
         p->setDeck(card_pool, card_freq, 5);
     }

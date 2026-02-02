@@ -7,42 +7,43 @@
 class GameMessage : public std::exception {
 private:
     std::string text;
+
 public:
     explicit GameMessage(const std::string &text) { this->text = text; }
     ~GameMessage() = default;
-    const char* what() const noexcept override { return text.c_str(); }
+    const char *what() const noexcept override { return text.c_str(); }
 };
 
 class ready_exception : public GameMessage {
 public:
     ready_exception()
-        :GameMessage("Minion not ready \nor has already attacked"){};
+        : GameMessage("Minion not ready \nor has already attacked") {};
 };
 
 class mana_exception : public GameMessage {
 public:
     explicit mana_exception(const int dif)
-        :GameMessage("Not enough mana! \nNeed " + std::to_string(dif) + " more!"){};
+        : GameMessage("Not enough mana! \nNeed " + std::to_string(dif) + " more!") {};
 };
 
 class target_exception : public GameMessage {
 public:
     explicit target_exception(const std::string &target)
-        :GameMessage("Select " + target + "!"){};
+        : GameMessage("Select " + target + "!") {};
 };
 
-class overflow_exception : public GameMessage { //hand/board full
+class overflow_exception : public GameMessage {
+    //hand/board full
 public:
-    explicit overflow_exception(const std::string &object):
-        GameMessage(object + " full!"){};
+    explicit overflow_exception(const std::string &object): GameMessage(object + " full!") {};
 };
 
-class empty_exception : public GameMessage {//deck empty dar hai sa fie general ig?
+class empty_exception : public GameMessage {
+    //deck empty dar hai sa fie general ig?
 public:
     explicit empty_exception(const std::string &object = "Deck")
-        :GameMessage(object + " empty!"){};
+        : GameMessage(object + " empty!") {};
 };
-
 
 
 #endif //EXCEPTIONS_HPP

@@ -1,42 +1,51 @@
-
 #include "player.hpp"
 
 #include "exceptions.hpp"
 
-//TODO: make builders for hunter, warlock, mb palladin with spawning spell
-/* Builder notes:
- * facem un builder cu setCardPool care face card_pool, card_freq si pool_size
- * plus player_init
- */
-
-//TODO: update init, selectCard and display to include signature
-
-player::player(const int id) :
-    maxMana(1), curMana(1), health(10), player_id(id), active(false),
-    Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0), signature(nullptr),
-    mana_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
-    hp_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
-    mana_sprite(ResourceManager::Instance().getTexture("crystal.png")),
-    hp_sprite(ResourceManager::Instance().getTexture("blood.png"))
-{
+player::player(const int id) : maxMana(1), curMana(1), health(10), player_id(id), active(false),
+                               Hand_startPosX(0), Hand_startPosY(0), Board_startPosX(0), Board_startPosY(0),
+                               signature(nullptr),
+                               mana_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
+                               hp_text(ResourceManager::Instance().getFont(FONT_DEFUALT)),
+                               mana_sprite(ResourceManager::Instance().getTexture("crystal.png")),
+                               hp_sprite(ResourceManager::Instance().getTexture("blood.png")) {
     mana_text.setCharacterSize(FONT_SIZE);
     hand.reserve(10); // max hand size is 10
     board.reserve(7); //max minions on board is 7
 }
+
+//better if it's just deleted, it doesn't make sense anyway
+// player player::operator=(const player &model) {
+//     p_deck = model.p_deck;
+//     unsigned int i;
+//     for (i = 0; i < model.hand.size(); ++i) {
+//         hand[i] = model.hand[i]->clone();
+//     }
+//     for (i = 0; i < model.board.size(); ++i) {
+//         board[i] = dynamic_cast<minion*>(model.board[i]->clone());
+//     }
+//     signature = model.signature->clone();
+//     return *this;
+// }
+
 player::~player() {
     unsigned int i;
-    for (i=0; i<hand.size(); ++i) {
+    std::cout << "p" << player_id << " delHand\n";
+    for (i = 0; i < hand.size(); ++i) {
         delete hand[i];
     }
-    for (i=0; i<board.size(); ++i) {
+    std::cout << "p" << player_id << " delBoard\n";
+    for (i = 0; i < board.size(); ++i) {
         delete board[i];
     }
+    // delete signature;
+    std::cout <<"player deleted" <<player_id << "\n";
 };
 
 //TODO: move to builder
-void player::init(const CardTypes * card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
+void player::init(const CardTypes *card_pool, const int *card_freq, const int pool_size, const CardTypes sig) {
     signature = CardFactory::Instance().create_card(sig);
-    p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
+    p_deck.deck_init(card_pool, card_freq, pool_size); // nu imi place asta
     p_deck.shuffle();
 }
 
@@ -45,17 +54,17 @@ void player::setSignature(CardTypes sig) {
 }
 
 void player::setDeck(const CardTypes *card_pool, const int *card_freq, const int pool_size) {
-    p_deck.deck_init(card_pool, card_freq, pool_size);// nu imi place asta
+    p_deck.deck_init(card_pool, card_freq, pool_size); // nu imi place asta
     p_deck.shuffle();
 }
 
-void player::playCard( const unsigned int poz ) {
+void player::playCard(const unsigned int poz) {
     if (!active) {
         std::cout << "player inactive!\n";
         return;
         // va fi folosit pt butoane probabil
     }
-    if (poz > hand.size()-1) {
+    if (poz > hand.size() - 1) {
         // teoretic n-ar trb sa se intample la butoane
         std::cout << "card beyond hand!\n";
         return;
@@ -64,8 +73,9 @@ void player::playCard( const unsigned int poz ) {
         std::cout << "board is full\n";
         return;
     }
-    if (hand[poz]->is_playable(curMana)) { // check if player has enough mana
-        board.push_back( static_cast<minion*>(hand[poz]) ); //place card on board
+    if (hand[poz]->is_playable(curMana)) {
+        // check if player has enough mana
+        board.push_back(static_cast<minion *>(hand[poz])); //place card on board
         board[board.size() - 1]->setScale(BOARD_SCALE, BOARD_SCALE);
         board[board.size() - 1]->set_selectFlag(false);
         board[board.size() - 1]->set_atkFlag(true);
@@ -79,12 +89,13 @@ void player::playCard( const unsigned int poz ) {
     std::cout << "not enough mana!\n";
 }
 
-void player::deployMinion( minion* atk ) {
+void player::deployMinion(minion *atk) {
     if (board.size() >= 7) {
         std::cout << "board is full\n";
         throw overflow_exception("Board");
     }
-    if (atk->is_playable(curMana)) { // check if player has enough mana
+    if (atk->is_playable(curMana)) {
+        // check if player has enough mana
         atk->set_selectFlag(false);
         atk->set_atkFlag(true);
         atk->set_deployFlag(true);
@@ -102,7 +113,7 @@ void player::deployMinion( minion* atk ) {
 }
 
 void player::remove_fromHand(const card *card) {
-    for (unsigned int i=0; i < hand.size(); ++i) {
+    for (unsigned int i = 0; i < hand.size(); ++i) {
         if (hand[i] == card) {
             hand.erase(hand.begin() + i);
             std::cout << "played card" << i << "from hand\n";
@@ -121,7 +132,7 @@ void player::drawFromDeck() {
         p_deck.getCard(); // "destroy" card you would have drawn
         throw overflow_exception("Hand");
     }
-    hand.push_back(p_deck.getCard() );
+    hand.push_back(p_deck.getCard());
 }
 
 void player::takeDMG(const int dmg) {
@@ -155,19 +166,18 @@ void player::payCost(const int cost) {
 //     return hand[poz];
 // }
 
-unsigned int player::getBoardSize() const{
+unsigned int player::getBoardSize() const {
     return board.size();
 }
 
 void player::checkBoard() {
     // removes dead minions from board
-    for (unsigned int i=0; i < board.size(); ++i) {
-        if (board[i]->getHealth() <= 0 ) {
+    for (unsigned int i = 0; i < board.size(); ++i) {
+        if (board[i]->getHealth() <= 0) {
             delete board[i];
             board.erase(board.begin() + i);
             // ulog << "Minion " << i << " has died\n";
             std::cout << "Minion " << i << " has died\n";
-
         }
     }
 }
@@ -182,7 +192,7 @@ void player::endTurn() {
         maxMana += 1;
     curMana = maxMana;
     active = false;
-    for (minion *card : board) {
+    for (minion *card: board) {
         card->set_atkFlag(false);
         //reset all minions on board
     }
@@ -190,10 +200,10 @@ void player::endTurn() {
 
 // ====SELECT====
 
-card* player::selectHand(const sf::Vector2f mouse_pos) const{
+card *player::selectHand(const sf::Vector2f mouse_pos) const {
     //search hand
-    for (unsigned int i=0; i<hand.size(); ++i) {
-        if ( hand[i]->getGlobalBounds().contains(mouse_pos) ) {
+    for (unsigned int i = 0; i < hand.size(); ++i) {
+        if (hand[i]->getGlobalBounds().contains(mouse_pos)) {
             // hand[i].set_selectFlag(true);
             return hand[i];
         }
@@ -201,9 +211,9 @@ card* player::selectHand(const sf::Vector2f mouse_pos) const{
     return nullptr;
 }
 
-minion* player::selectBoard(const sf::Vector2f mouse_pos) const{
-    for (unsigned int i=0; i<board.size(); ++i) {
-        if ( board[i]->getGlobalBounds().contains(mouse_pos) ) {
+minion *player::selectBoard(const sf::Vector2f mouse_pos) const {
+    for (unsigned int i = 0; i < board.size(); ++i) {
+        if (board[i]->getGlobalBounds().contains(mouse_pos)) {
             // board[i].set_selectFlag(true);
             return board[i];
         }
@@ -211,25 +221,25 @@ minion* player::selectBoard(const sf::Vector2f mouse_pos) const{
     return nullptr;
 }
 
-card* player::selectCard(const sf::Vector2f mouse_pos) const{
+card *player::selectCard(const sf::Vector2f mouse_pos) const {
     //asta e kinda stupid
 
     if (signature->getGlobalBounds().contains(mouse_pos)) {
         return signature;
     }
 
-    card* select;
-    if ( (select = selectHand(mouse_pos)) != nullptr ) {
+    card *select;
+    if ((select = selectHand(mouse_pos)) != nullptr) {
         return select;
     }
-    if ( (select = selectHand(mouse_pos)) != nullptr ) {
+    if ((select = selectHand(mouse_pos)) != nullptr) {
         return select;
     }
 
     return selectBoard(mouse_pos);
 }
 
-bool player::selectPlayer(const sf::Vector2f mouse_pos) const{
+bool player::selectPlayer(const sf::Vector2f mouse_pos) const {
     if (hp_sprite.getGlobalBounds().contains(mouse_pos))
         return true;
     return false;
@@ -261,20 +271,27 @@ void player::setStartPos(const sf::RenderWindow &window) {
         Board_startPosX = static_cast<float>(size.x) * 0.3f;
         Board_startPosY = static_cast<float>(size.y) * 0.5f;
         //mana
-        mana_text.setPosition({static_cast<float>(size.x) * 0.65f,
-                        static_cast<float>(size.y) * 0.68f});
-        mana_sprite.setPosition({static_cast<float>(size.x) * 0.61f,
-                        static_cast<float>(size.y) * 0.68f});
+        mana_text.setPosition({
+            static_cast<float>(size.x) * 0.65f,
+            static_cast<float>(size.y) * 0.68f
+        });
+        mana_sprite.setPosition({
+            static_cast<float>(size.x) * 0.61f,
+            static_cast<float>(size.y) * 0.68f
+        });
         mana_sprite.setScale({0.6f, 0.6f});
         //hp
-        hp_sprite.setPosition({static_cast<float>(size.x) * 0.35f,
-                static_cast<float>(size.y) * 0.67f});
+        hp_sprite.setPosition({
+            static_cast<float>(size.x) * 0.35f,
+            static_cast<float>(size.y) * 0.67f
+        });
         hp_sprite.setScale({0.15f, 0.15f});
-        hp_text.setPosition({static_cast<float>(size.x) * 0.36f,
-                        static_cast<float>(size.y) * 0.69f});
+        hp_text.setPosition({
+            static_cast<float>(size.x) * 0.36f,
+            static_cast<float>(size.y) * 0.69f
+        });
         // std::cout<< "player1\n";
-    }
-    else {
+    } else {
         //hand
         Hand_startPosX = static_cast<float>(size.x) * 0.85f;
         Hand_startPosY = static_cast<float>(size.y) * 0.05f;
@@ -282,49 +299,56 @@ void player::setStartPos(const sf::RenderWindow &window) {
         Board_startPosX = static_cast<float>(size.x) * 0.6f;
         Board_startPosY = static_cast<float>(size.y) * 0.32f;
         //hp
-        mana_text.setPosition({static_cast<float>(size.x) * 0.37f,
-                        static_cast<float>(size.y) * 0.25f});
-        mana_sprite.setPosition({static_cast<float>(size.x) * 0.33f,
-                        static_cast<float>(size.y) * 0.25f});
+        mana_text.setPosition({
+            static_cast<float>(size.x) * 0.37f,
+            static_cast<float>(size.y) * 0.25f
+        });
+        mana_sprite.setPosition({
+            static_cast<float>(size.x) * 0.33f,
+            static_cast<float>(size.y) * 0.25f
+        });
         mana_sprite.setScale({0.6f, 0.6f});
         //hp
-        hp_sprite.setPosition({static_cast<float>(size.x) * 0.6f,
-                static_cast<float>(size.y) * 0.25f});
+        hp_sprite.setPosition({
+            static_cast<float>(size.x) * 0.6f,
+            static_cast<float>(size.y) * 0.25f
+        });
         hp_sprite.setScale({0.15f, 0.15f});
-        hp_text.setPosition({static_cast<float>(size.x) * 0.612f,
-                        static_cast<float>(size.y) * 0.27f});
+        hp_text.setPosition({
+            static_cast<float>(size.x) * 0.612f,
+            static_cast<float>(size.y) * 0.27f
+        });
     }
 }
 
 void player::drawHand(sf::RenderWindow &window) const {
-    //naspa pt ca if-uri da nuj cum altucmva sa fac
-    float offset;
+    float offset; //if select flag is 0, set 0 (no drawing offset)
     if (player_id == 1) {
-        for (unsigned int i=0; i < hand.size(); ++i) {
-            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
-                hand[i]->draw(window, Hand_startPosX + static_cast<float>(i* SLOT_WIDTH), Hand_startPosY - offset);
+        for (unsigned int i = 0; i < hand.size(); ++i) {
+            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET / 1.6 : 0;
+            hand[i]->draw(window, Hand_startPosX + static_cast<float>(i * SLOT_WIDTH), Hand_startPosY - offset);
         }
-    }
-    else {
-        for (unsigned int i=0; i < hand.size(); ++i) {
-            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
-                hand[i]->draw(window, Hand_startPosX - static_cast<float>(i* SLOT_WIDTH), Hand_startPosY + offset);
+    } else {
+        for (unsigned int i = 0; i < hand.size(); ++i) {
+            offset = hand[i]->check_selectFlag() ? SELECT_OFFSET / 1.6 : 0;
+            hand[i]->draw(window, Hand_startPosX - static_cast<float>(i * SLOT_WIDTH), Hand_startPosY + offset);
         }
     }
 }
 
 void player::drawBoard(sf::RenderWindow &window) const {
-    float offset;
+    float offset; //if select flag is 0, set 0 (no drawing offset)
     if (player_id == 1) {
-        for (unsigned int i=0; i < board.size(); ++i) {
-            offset = board[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
-            board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY - offset);
+        for (unsigned int i = 0; i < board.size(); ++i) {
+            offset = board[i]->check_selectFlag() ? SELECT_OFFSET / 1.6 : 0;
+            board[i]->draw(window, Board_startPosX + static_cast<float>(i * SLOT_WIDTH / 1.6),
+                           Board_startPosY - offset);
         }
-    }
-    else {
-        for (unsigned int i=0; i < board.size(); ++i) {
-            offset = board[i]->check_selectFlag() ? SELECT_OFFSET/1.6 : 0;
-            board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH/1.6), Board_startPosY + offset);
+    } else {
+        for (unsigned int i = 0; i < board.size(); ++i) {
+            offset = board[i]->check_selectFlag() ? SELECT_OFFSET / 1.6 : 0;
+            board[i]->draw(window, Board_startPosX - static_cast<float>(i * SLOT_WIDTH / 1.6),
+                           Board_startPosY + offset);
         }
     }
 }
@@ -337,11 +361,10 @@ void player::drawSig(sf::RenderWindow &window) const {
 
     if (player_id == 1) {
         signature->draw(window, static_cast<float>(size.x) * 0.03f,
-                      static_cast<float>(size.y) * 0.5f - offset);
-    }
-    else {
+                        static_cast<float>(size.y) * 0.5f - offset);
+    } else {
         signature->draw(window, static_cast<float>(size.x) * 0.9f,
-                      static_cast<float>(size.y) * 0.3f + offset);
+                        static_cast<float>(size.y) * 0.3f + offset);
     }
 }
 
@@ -367,13 +390,13 @@ void player::drawPlayer(sf::RenderWindow &window) {
 void player::display() {
     std::cout << "act:" << active << " MM:" << maxMana << " M:" << curMana;
     std::cout << " HP:" << health << " Hand: " << hand.size() << " cards\n";
-    for (unsigned int i=0; i<hand.size(); ++i) {
+    for (unsigned int i = 0; i < hand.size(); ++i) {
         std::cout << i;
         hand[i]->display();
         std::cout << "||";
     }
     std::cout << "\nBoard: " << board.size() << " cards\n";
-    for (unsigned int i=0; i<board.size(); ++i) {
+    for (unsigned int i = 0; i < board.size(); ++i) {
         std::cout << i;
         board[i]->display();
         std::cout << "||";
@@ -381,7 +404,6 @@ void player::display() {
     std::cout << "\nDeck: ";
     p_deck.display();
     std::cout << "\n\n";
-
 }
 
 

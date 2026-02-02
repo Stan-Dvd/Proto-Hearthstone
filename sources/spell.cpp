@@ -1,7 +1,8 @@
 #include "spell.hpp"
 
 spell::spell(const int cost, std::string name, std::string description, std::string texture):
-                card(cost, texture), name_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
+                card(cost, texture),
+                name_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
 {
     name_txt.setString(name);
     name_txt.setCharacterSize(FONT_SIZE * NAME_SCALE);

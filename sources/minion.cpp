@@ -8,32 +8,31 @@ minion::minion(int cost, int pow, int hp, std::string texture):
                     attackFlag(false), deployFlag(false),
                     hp_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
                     pow_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
-        {
-            hp_txt.setString(std::to_string(health));
-            hp_txt.setCharacterSize(FONT_SIZE);
-            // hp_txt.setFillColor(sf::Color::Black);
-            pow_txt.setString(std::to_string(power));
-            pow_txt.setCharacterSize(FONT_SIZE);
-            // pow_txt.setFillColor(sf::Color::Black);
-            // cost_txt.setFillColor(sf::Color::Black);
-        }
+{
+    hp_txt.setString(std::to_string(health));
+    hp_txt.setCharacterSize(FONT_SIZE);
+    // hp_txt.setFillColor(sf::Color::Black);
+    pow_txt.setString(std::to_string(power));
+    pow_txt.setCharacterSize(FONT_SIZE);
+    // pow_txt.setFillColor(sf::Color::Black);
+    // cost_txt.setFillColor(sf::Color::Black);
+}
 
-    minion::minion (const minion &model):
-            card(model),
-            power(model.power), health(model.health),
-            attackFlag(model.attackFlag), deployFlag(model.deployFlag),
-            hp_txt(model.hp_txt),
-            pow_txt(model.pow_txt) {
-        // std::cout << "card copied";
+minion::minion(const minion &model): card(model),
+                                     power(model.power), health(model.health),
+                                     attackFlag(model.attackFlag), deployFlag(model.deployFlag),
+                                     hp_txt(model.hp_txt),
+                                     pow_txt(model.pow_txt) {
+    // std::cout << "card copied";
 } // COPY constructor
 
 minion::~minion() {
-        sf::Texture blankT = sf::Texture();
-        sf::Font blankF = sf::Font();
-        // nu ma lasa sa pun pur si simplu Texture() in functie ughh
-        hp_txt.setFont(blankF);
-        pow_txt.setFont(blankF);
-    }
+    sf::Texture blankT = sf::Texture();
+    sf::Font blankF = sf::Font();
+    // nu ma lasa sa pun pur si simplu Texture() in functie ughh
+    hp_txt.setFont(blankF);
+    pow_txt.setFont(blankF);
+}
 
 // GET/SETTERS
 
@@ -71,15 +70,15 @@ void minion::takeDMG(const int val) {
     health -= val;
 }
 
-void minion::action(player *p, const bool owner, const sf::Vector2f mouse_pos) {
+void minion::action(player **p, const bool owner, const sf::Vector2f mouse_pos) {
 
     //whatever happens, deselect card. otherwise gets way too complicated
-    // set_selectFlag(false); this happens in game now
+    //set_selectFlag(false); this happens in game now
 
     if (deployFlag == false) {
         // minion is in hand. deploy minion?
-        if (p[owner].getBoardBounds().contains(mouse_pos)) {
-            p[owner].deployMinion(this); //can throw mana exc
+        if (p[owner]->getBoardBounds().contains(mouse_pos)) {
+            p[owner]->deployMinion(this); //can throw mana exc
             return;
         }
         throw target_exception("friendly board");
@@ -91,19 +90,19 @@ void minion::action(player *p, const bool owner, const sf::Vector2f mouse_pos) {
         throw ready_exception();
     }
 
-    minion *target = p[!owner].selectBoard(mouse_pos);
+    minion *target = p[!owner]->selectBoard(mouse_pos);
     if (target != nullptr) {
         // if target is enemy minion
         attackFlag = true;
         attack(target);
-        p[0].checkBoard();
-        p[1].checkBoard();
+        p[0]->checkBoard();
+        p[1]->checkBoard();
         std::cout << "minion of player " << !owner << " attacked\n";
         return;
     }
-    if (p[!owner].selectPlayer(mouse_pos)) {
+    if (p[!owner]->selectPlayer(mouse_pos)) {
         attackFlag = true;
-        p[!owner].takeDMG(power);
+        p[!owner]->takeDMG(power);
         std::cout << "player " << !owner << " attacked\n";
         return;
     }

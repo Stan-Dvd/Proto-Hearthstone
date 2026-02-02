@@ -11,16 +11,17 @@
 #include "spell.hpp"
 
 int main() {
-
-    playerBuilder *p1Builder, *p2Builder;
-    p1Builder = new hunterBuilder(1);
-    p2Builder = new warlockBuilder(2);
+     playerBuilder *p1Builder, *p2Builder;
+     p1Builder = new hunterBuilder(1);
+     p2Builder = new warlockBuilder(2);
+    //builders handle player setup, depending on class
 
     game::Instance().init(p1Builder, p2Builder);
     game::Instance().run();
 
     delete p1Builder;
     delete p2Builder;
+
 
     return 0;
 }

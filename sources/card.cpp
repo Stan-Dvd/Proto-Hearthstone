@@ -1,10 +1,9 @@
 #include "card.hpp"
 
-card::card(const int cost, std::string texture):
-                    cost(cost), selectFlag(false),
-                    cost_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
-                    card_sprite(ResourceManager::Instance().getTexture(texture)),
-                    flavor_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
+card::card(const int cost, std::string texture): cost(cost), selectFlag(false),
+                                                 cost_txt(ResourceManager::Instance().getFont(FONT_DEFUALT)),
+                                                 card_sprite(ResourceManager::Instance().getTexture(texture)),
+                                                 flavor_txt(ResourceManager::Instance().getFont(FONT_DEFUALT))
 {
     // pow_txt.setFillColor(sf::Color::Black);
     cost_txt.setString(std::to_string(cost));
@@ -14,20 +13,19 @@ card::card(const int cost, std::string texture):
     // cost_txt.setFillColor(sf::Color::Black);
 }
 
-    card::card (const card &model):
-            cost(model.cost), selectFlag(model.selectFlag),
-            cost_txt(model.cost_txt),
-            card_sprite(model.card_sprite.getTexture()),
-            flavor_txt(model.flavor_txt) {
-        // std::cout << "card copied";
+card::card(const card &model): cost(model.cost), selectFlag(model.selectFlag),
+                               cost_txt(model.cost_txt),
+                               card_sprite(model.card_sprite.getTexture()),
+                               flavor_txt(model.flavor_txt) {
+    // std::cout << "card copied";
 } // COPY constructor
 
 card::~card() {
-        const sf::Texture blankT = sf::Texture();
-        const sf::Font blankF = sf::Font();
-        // nu ma lasa sa pun pur si simplu Texture() in functie ughh
-        card_sprite.setTexture(blankT);
-        cost_txt.setFont(blankF);
+    const sf::Texture blankT = sf::Texture();
+    const sf::Font blankF = sf::Font();
+    // nu ma lasa sa pun pur si simplu Texture() in functie ughh
+    card_sprite.setTexture(blankT);
+    cost_txt.setFont(blankF);
 }
 
 // GET/SETTERS
@@ -90,17 +88,17 @@ void card::setScale(const float x, const float y) {
 
 // OPERATORS
 
-    // card card::operator=(const card &model){
-    //     cost = model.cost;
-    //     power = model.power;
-    //     health = model.health;
-    //     attackFlag = model.attackFlag;
-    //     card_sprite = model.card_sprite;
-    //     hp_txt = model.hp_txt;
-    //     pow_txt = model.pow_txt;
-    //     cost_txt = model.cost_txt;
-    //     return *this;
-    // }
+// card card::operator=(const card &model){
+//     cost = model.cost;
+//     power = model.power;
+//     health = model.health;
+//     attackFlag = model.attackFlag;
+//     card_sprite = model.card_sprite;
+//     hp_txt = model.hp_txt;
+//     pow_txt = model.pow_txt;
+//     cost_txt = model.cost_txt;
+//     return *this;
+// }
 // std::ostream& operator<< (std::ostream &os, const card &card) {
 //     os << "c:"<< card.cost;
 //     os << " Sflg:" << card.selectFLag;

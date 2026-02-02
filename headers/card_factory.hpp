@@ -3,17 +3,21 @@
 
 #include "cards_def.hpp"
 
-enum CardTypes { Minion1, Minion2, Minion3,
-                Fireball, PotOfGreed, MendWounds,
-                Hunters_Gift, Eldritch_Blast};
+enum CardTypes {
+    Minion1, Minion2, Minion3,
+    Fireball, PotOfGreed, MendWounds,
+    Hunters_Gift, Eldritch_Blast
+};
 
-class CardFactory :public Singleton<CardFactory> {
+class CardFactory : public Singleton<CardFactory> {
     friend class Singleton<CardFactory>;
+
 private:
     CardFactory() = default;
     ~CardFactory() = default;
+
 public:
-    static card* create_card(const CardTypes type) {
+    static card *create_card(const CardTypes type) {
         switch (type) {
             case CardTypes::Minion1:
                 return new minion(1, 2, 1);

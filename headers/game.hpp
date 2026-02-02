@@ -9,10 +9,13 @@
 #include "playerBuilder.hpp"
 #include "player.hpp"
 
-class game : public Singleton<game>{
+class game : public Singleton<game> {
     friend class Singleton<game>;
+
 private:
-    player p[2];
+    player *p[2];
+    //pointer vector so it can work with builders
+    //otherwise copy operator/constructors are a nightmare
     bool turn_id; // traks whose turn it is
     bool select_flag;
     card *selected_card;
@@ -22,15 +25,19 @@ private:
     sf::RenderWindow window;
 
     game();
+    ~game();
+
 public:
-    void init(playerBuilder* p1Builder, playerBuilder* p2Builder);
+    void init(playerBuilder *p1Builder, playerBuilder *p2Builder);
+    //OLD init
+    void init(const CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
+                const CardTypes *card_pool2, const int *card_freq2, const int pool_size2);
     void display();
     void switchTurn();
     void selectCard(const auto mouse_pos);
     void handle_click(const auto mouse_pos);
 
     void run();
-    void demo();
 };
 
 #endif //GAME_HPP
