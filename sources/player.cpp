@@ -294,7 +294,7 @@ void player::setStartPos(const sf::RenderWindow &window) {
     } else {
         //hand
         Hand_startPosX = static_cast<float>(size.x) * 0.85f;
-        Hand_startPosY = static_cast<float>(size.y) * 0.05f;
+        Hand_startPosY = static_cast<float>(size.y) * 0.03f;
         //board
         Board_startPosX = static_cast<float>(size.x) * 0.6f;
         Board_startPosY = static_cast<float>(size.y) * 0.32f;

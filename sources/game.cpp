@@ -11,7 +11,7 @@ game::game() : p{nullptr, nullptr},
                text_box({270.f, 100.f}),
                message(ResourceManager::Instance().getFont(FONT_DEFUALT))
 {
-    window.create(sf::VideoMode({1920, 1200}), "Proto-Hearthstone", sf::State::Fullscreen);
+    window.create(sf::VideoMode({1920, 1080}), "Proto-Hearthstone", sf::State::Fullscreen);
     window.setFramerateLimit(60);
 
     //set board sprite scale

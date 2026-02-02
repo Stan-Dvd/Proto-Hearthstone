@@ -16,9 +16,11 @@ private:
     player *p[2];
     //pointer vector so it can work with builders
     //otherwise copy operator/constructors are a nightmare
-    bool turn_id; // traks whose turn it is
-    bool select_flag;
+    bool turn_id; // tracks whose turn it is
+    bool select_flag; //tracks if a card is selected
     card *selected_card;
+
+    //assets
     sf::Sprite Board, turn_button;
     sf::RectangleShape text_box;
     sf::Text message;
