@@ -22,11 +22,6 @@ public:
     player operator=(const player &model) = delete;
     ~player();
 
-    void init(const CardTypes *card_pool,
-              const int *card_freq,
-              int pool_size,
-              CardTypes sig);
-
     void setSignature(CardTypes sig);
     void setDeck(const CardTypes *card_pool, const int *card_freq, const int pool_size);
 

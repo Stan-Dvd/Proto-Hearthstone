@@ -73,22 +73,6 @@ void game::init(playerBuilder *p1Builder, playerBuilder *p2Builder) {
     p[0]->startTurn();
 }
 
-//OLD init
-void game::init(const CardTypes *card_pool1, const int *card_freq1, const int pool_size1,
-                const CardTypes *card_pool2, const int *card_freq2, const int pool_size2) {
-    p[0]->init(card_pool1, card_freq1, pool_size1, Hunters_Gift);
-    p[1]->init(card_pool2, card_freq2, pool_size2, Eldritch_Blast);
-    p[0]->setStartPos(window);
-    p[1]->setStartPos(window);
-    std::cout << "drawing first cards";
-    for (int i=0; i<3; ++i) { // players start with 3 cards from their deck
-        p[0]->drawFromDeck();
-        p[1]->drawFromDeck();
-    }
-    p[1]->drawFromDeck();
-    p[0]->startTurn();
-}
-
 void game::display() {
     window.clear();
     window.draw(Board);
