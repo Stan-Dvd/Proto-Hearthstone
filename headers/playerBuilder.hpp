@@ -14,7 +14,7 @@ public:
     explicit playerBuilder(const playerBuilder& pb) {
         p = new player(*pb.getPlayer());
     }
-    playerBuilder* operator=() = delete;
+    playerBuilder* operator=(const playerBuilder &pb) = delete;
 
     virtual ~playerBuilder() {
         delete p;
